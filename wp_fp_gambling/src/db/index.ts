@@ -1,4 +1,9 @@
+import { env } from "@/lib/env";
 import { drizzle } from "drizzle-orm/node-postgres";
-import { Client } from 'pg';
+import { Pool } from 'pg';
 
-import * as schema from './schema';
+const pool = new Pool({
+    connectionString: env.NEXT_PUBLIC_POSTGRES_URL,
+});
+
+export const db = drizzle(pool);
