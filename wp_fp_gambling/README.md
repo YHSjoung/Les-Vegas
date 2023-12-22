@@ -15,13 +15,14 @@ Our in-game currency is earned by clicking a button, which awards 1000 coins eac
 
 ## Set Up
 
-First, run the development server:
-
-```bash
-yarn dev
-```
-Then, set up the .env.local 
+First, set up the .env.local 
 
 ```bash
 cp .env.examle .env
+```
+
+Then, run the development server:
+
+```bash
+yarn dev
 ```
