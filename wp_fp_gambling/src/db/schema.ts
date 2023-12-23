@@ -1,12 +1,9 @@
 import { relations } from "drizzle-orm";
 import {
     index,
-    text,
     pgTable,
     serial,
-    uuid,
     varchar,
-    unique,
     integer,
     pgEnum,
     timestamp,
@@ -28,6 +25,7 @@ export const usersTable = pgTable(
 );
 
 const typeEnum = pgEnum('type', ['sport', 'weather', 'marketing']);
+
 export const contractTable = pgTable(
   "contract",
   {
