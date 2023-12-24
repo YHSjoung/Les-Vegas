@@ -1,14 +1,24 @@
+
 import Header from "./component/Header";
 import GetFinanceIndex from "@/component/getFinanceIndex";
+import { Navbar, Main, Footer, Wrapper, WrapperNav } from "./component";
+
 
 export default function Home() {
 
 
   return (
     <>
+
+    
       <Header />
-      <h1 className="flex flex-col justify-between">Home</h1>
-      <GetFinanceIndex />
+  
+       <Main />
+      <Wrapper/>
+      <Footer />     
+
+    
+       <GetFinanceIndex />
     </>
   );
 }
