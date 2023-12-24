@@ -3,9 +3,9 @@
 A Ecommerce Website made with React.js Framework.
 
 
-## Demo
+## Deploy
 
-https://reactjs-ecommerce-app.vercel.app/
+https://wp1121-final.vercel.app/
 
 ## Features
 
