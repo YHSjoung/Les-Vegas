@@ -17,6 +17,8 @@ const PostContractsSchema = z.object({
     optionA: z.string(),
     optionB: z.string(),
     optionC: z.string(),
+    blockDate: z.string(),
+    updateDate: z.string(),
 });
 type PostContractsType = z.infer<typeof PostContractsSchema>;
 
@@ -86,7 +88,7 @@ export async function POST(request: NextRequest) {
             { status: 400,}
         );
     }
-    const { type, title, description, optionA, optionB, optionC} = data as PostContractsType;
+    const { type, title, description, optionA, optionB, optionC, blockDate, updateDate} = data as PostContractsType;
     try {
         const newContract = await db
         .insert(contractTable)
@@ -97,6 +99,8 @@ export async function POST(request: NextRequest) {
             optionA: optionA,
             optionB: optionB,
             optionC: optionC,
+            blockDate: blockDate,
+            updateDate: updateDate,
         })
         .returning()
         .execute();

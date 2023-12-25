@@ -27,10 +27,6 @@ export const usersTable = pgTable(
 
 const typeEnum = pgEnum('type', ['sport', 'weather', 'marketing']);
 const outcomeEnum = pgEnum('outcome', ['optionA', 'optionB', 'optionC']);
-const tomorrow = new Date();
-tomorrow.setDate(tomorrow.getDate() + 1);
-const theDayAfterTomorrow = new Date();
-theDayAfterTomorrow.setDate(theDayAfterTomorrow.getDate() + 2);
 
 
 export const contractTable = pgTable(
@@ -45,8 +41,8 @@ export const contractTable = pgTable(
     optionC: varchar("optionC").default(""),
     dollar: integer("dollar").default(0),
     attendees: integer("attendees").default(0),
-    blockDate: date("blockDate",{mode: "date"}).default(tomorrow),
-    updateDate: date("updateDate",{mode : "date"}).default(theDayAfterTomorrow),
+    blockDate: date("blockDate",{mode: "string"}),
+    updateDate: date("updateDate",{mode : "string"}),
     open: boolean("open").default(true),
     outcome: outcomeEnum("outcome"),
   },
