@@ -7,9 +7,7 @@ export enum ContractType {
     Sport = "sport",
     Weather = "weather",
     Marketing = "marketing"
-  }
-
-const contractTypeValues = Object.values(ContractType);
+  };
 
 const PostContractsSchema = z.object({
     id: z.string(),
@@ -23,6 +21,23 @@ const PostContractsSchema = z.object({
     updateDate: z.string(),
 });
 type PostContractsType = z.infer<typeof PostContractsSchema>;
+
+export enum OptionType {
+  optionA = "optionA",
+  optionB = "optionB",
+  optionC = "optionC"
+};
+const PutConractSchema = z.object({
+  id: z.string(),
+  type: z.string().optional(),
+  open: z.boolean().optional(),
+  outcome: z.enum(["optionA", "optionB", "optionC"]).optional(),
+  totalDollar: z.number().optional(),
+  optionADollar: z.number().optional(),
+  optionBDollar: z.number().optional(),
+  optionCDollar: z.number().optional(),
+});
+type PutConractType = z.infer<typeof PutConractSchema>;
 
 export async function postContract(data: PostContractsType) {
     try {
@@ -53,4 +68,35 @@ export async function postContract(data: PostContractsType) {
     } catch (error) {
       return "Post contract failed"
     }
+}
+
+export async function putContract(data: PutConractType) {
+  try {
+    PutConractSchema.parse(data);
+  } catch (error) {
+    return  "Put data does not match schema"
+  }
+  const { id, open, outcome, totalDollar, optionADollar, optionBDollar, optionCDollar } = data as PutConractType;
+  console.log(data);
+  try {
+  const updateContract = await db
+        .update(contractTable)
+        .set({
+            open: open,
+            outcome: outcome,
+            totalDollar: totalDollar,
+            optionADollar: optionADollar,
+            optionBDollar: optionBDollar,
+            optionCDollar: optionCDollar,
+        })
+        .where(
+            eq(contractTable.id, id),
+        )
+        .returning()
+        .execute();
+        console.log(updateContract);
+        return updateContract;
+      } catch (error) {
+        return "Put contract failed"
+      }
 }

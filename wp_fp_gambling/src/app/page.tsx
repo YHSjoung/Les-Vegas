@@ -1,6 +1,6 @@
 
 import Header from "./component/Header";
-import GetFinanceIndex from "@/component/getFinanceIndex";
+import TestAPI from "@/component/TestAPI";
 import { Navbar, Main, Footer, Wrapper, WrapperNav } from "./component";
 
 
@@ -18,7 +18,7 @@ export default function Home() {
       <Footer />     
 
     
-       <GetFinanceIndex />
+       <TestAPI />
     </>
   );
 }

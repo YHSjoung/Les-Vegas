@@ -60,7 +60,7 @@ export const betsTable = pgTable(
   {
     id: serial("id").primaryKey(),
     userId: integer("userId"),
-    contractId: integer("contractId"),
+    contractId: varchar("contractId"),
     option: varchar("option").default(""),
     dollar: integer("dollar").default(0),
     createdAt: timestamp("createdAt").defaultNow(),
