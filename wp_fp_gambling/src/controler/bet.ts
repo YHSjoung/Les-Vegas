@@ -4,7 +4,7 @@ import { betsTable } from "@/db/schema";
 import z from "zod";
 
 const PostBetSchema = z.object({
-  userId: z.number(),
+  userId: z.string(),
   contractId: z.string(),
   option: z.enum(["optionA", "optionB", "optionC"]),
   dollar: z.number(),
@@ -17,7 +17,7 @@ export enum forWhat {
 }
 
 const GetBetSchema = z.object({
-  userId: z.number().optional(),
+  userId: z.string().optional(),
   contractId: z.string().optional(),
   forWhat: z.enum(["user", "contract"]),
 });

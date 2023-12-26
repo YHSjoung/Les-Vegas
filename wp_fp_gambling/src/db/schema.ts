@@ -14,14 +14,11 @@ import {
 export const usersTable = pgTable(
   "users",
   {
-    id: serial("id").primaryKey(),
-    email: varchar("email").unique(),
+    id: varchar("id").primaryKey(),
     dollar: integer("dollar").default(0),
-    name: varchar("name").default(""),
   },
   (table) => ({
-    emailIndex: index("email_index").on(table.email),
-    nameIndex: index("name_index").on(table.name),
+    idIndex: index("user_id_index").on(table.id),
   }),
 );
 
@@ -59,7 +56,7 @@ export const betsTable = pgTable(
   "bets",
   {
     id: serial("id").primaryKey(),
-    userId: integer("userId"),
+    userId: varchar("userId"),
     contractId: varchar("contractId"),
     option: varchar("option").default(""),
     dollar: integer("dollar").default(0),

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { contractTable } from "@/db/schema";
 import { db } from "@/db";
 import { eq, and } from "drizzle-orm";
-import { env } from "@/lib/env";
 import {
   postContract,
   ContractType,
