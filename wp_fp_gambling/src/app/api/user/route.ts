@@ -18,6 +18,5 @@ export async function POST(request: NextRequest) {
       { error: "Something went wrong" },
       { status: 500 },
     );
-  };
-};
-
+  }
+}

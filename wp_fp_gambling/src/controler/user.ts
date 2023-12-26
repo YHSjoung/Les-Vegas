@@ -68,33 +68,33 @@ export async function addDollar(data: AddDollarType) {
   } catch (error) {
     return "Add dollar failed";
   }
-};
+}
 
 export async function deductDollar(data: deductDollarType) {
-    try {
-        deductDollarSchema.parse(data);
-    } catch (error) {
-        return "Post data does not match schema";
-    }
-    const { userId, dollar } = data as deductDollarType;
-    try {
-        const user = await db
-        .select({
-            dollar: usersTable.dollar,
-        })
-        .from(usersTable)
-        .where(eq(usersTable.id, userId))
-        .execute();
-        const newDollar = user[0].dollar! - dollar;
-        const updatedUser = await db
-        .update(usersTable)
-        .set({
-            dollar: newDollar,
-        })
-        .where(eq(usersTable.id, userId))
-        .execute();
-        return updatedUser;
-    } catch (error) {
-        return "Deduct dollar failed";
-    }
-};
+  try {
+    deductDollarSchema.parse(data);
+  } catch (error) {
+    return "Post data does not match schema";
+  }
+  const { userId, dollar } = data as deductDollarType;
+  try {
+    const user = await db
+      .select({
+        dollar: usersTable.dollar,
+      })
+      .from(usersTable)
+      .where(eq(usersTable.id, userId))
+      .execute();
+    const newDollar = user[0].dollar! - dollar;
+    const updatedUser = await db
+      .update(usersTable)
+      .set({
+        dollar: newDollar,
+      })
+      .where(eq(usersTable.id, userId))
+      .execute();
+    return updatedUser;
+  } catch (error) {
+    return "Deduct dollar failed";
+  }
+}
