@@ -17,8 +17,14 @@ const Header = () => {
       </Head>
 
       <nav className="py-4 px-4 flex items-center justify-between">
-        <Link href="/" className="text-black text-xl font-bold">Gambling</Link>
-        {!userId && <Link href="/signIn" className="text-black text-xl font-bold">SignIn</Link>}
+        <Link href="/" className="text-black text-xl font-bold">
+          Gambling
+        </Link>
+        {!userId && (
+          <Link href="/signIn" className="text-black text-xl font-bold">
+            SignIn
+          </Link>
+        )}
         <UserButton afterSignOutUrl="/" />
       </nav>
     </>

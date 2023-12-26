@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
 import { contractTable } from "@/db/schema";
 import { db } from "@/db";
-import { eq, and,} from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { env } from "@/lib/env";
-import { postContract, ContractType, putContract, OptionType } from "@/controler/contract";
+import {
+  postContract,
+  ContractType,
+  putContract,
+  OptionType,
+} from "@/controler/contract";
 import { getBet, forWhat } from "@/controler/bet";
 import { addDollar } from "@/controler/user";
 
@@ -21,7 +26,7 @@ const DateArray = [yesterday, today, tomorrow, theDayAfterTomorrow];
 // 建立 NBA 隊伍名稱字典
 interface Dictionary {
   [key: string]: string;
-};
+}
 const NBATeamNameDictionay: Dictionary = {
   "nba.t.1": "亞特蘭大老鷹",
   "nba.t.2": "波士頓塞爾提克",
@@ -56,31 +61,34 @@ const NBATeamNameDictionay: Dictionary = {
 };
 
 //格式化全局日期 YYYY-MM-DD
-function formateDate(DateArray: Array<string|number|Date>) {
+function formateDate(DateArray: Array<string | number | Date>) {
   const formatedDateArray = [];
   for (let i = 0; i < DateArray.length; i++) {
     const date = new Date(DateArray[i]);
     const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
     formatedDateArray[i] = `${year}-${month}-${day}`;
   }
   return formatedDateArray;
-};
+}
 
 // 建立天氣合約
 async function postWeatherContract(formatedDateArray: Array<string>) {
-
   // 格式化天氣日期 YYYYMMDD
   const weatherDateArray = [];
   for (let i = 0; i < DateArray.length; i++) {
     const weatherDate = formatedDateArray[i].replace(/-/g, "");
     weatherDateArray.push(weatherDate);
-  };
+  }
   // 調取明天中午 12 點的氣溫預測
-  const response = await fetch(`https://www.cwa.gov.tw/Data/js/3hr/ChartData_3hr_T_63.js?T=${weatherDateArray[1]}00-0`);
+  const response = await fetch(
+    `https://www.cwa.gov.tw/Data/js/3hr/ChartData_3hr_T_63.js?T=${weatherDateArray[1]}00-0`,
+  );
   const textdata = await response.text();
-  const forcastDegree = Number(textdata.split('\n\n')[2].split('\n')[9].split('[')[1].split(',')[12]);
+  const forcastDegree = Number(
+    textdata.split("\n\n")[2].split("\n")[9].split("[")[1].split(",")[12],
+  );
   console.log(forcastDegree);
 
   // 建立合約
@@ -98,12 +106,14 @@ async function postWeatherContract(formatedDateArray: Array<string>) {
   const newContract = await postContract(postData);
   console.log(newContract);
   return newContract;
-};
+}
 
 // 建立 NBA 合約
 async function postNBAContract(formatedDateArray: Array<string>) {
   // 調取明天 NBA 明天賽程
-  const response = await fetch(`https://api-secure.sports.yahoo.com/v1/editorial/s/scoreboard?&region=TW&tz=Asia%2FTaipei&ysp_redesign=1&leagues=nba&date=${formatedDateArray[2]}`);
+  const response = await fetch(
+    `https://api-secure.sports.yahoo.com/v1/editorial/s/scoreboard?&region=TW&tz=Asia%2FTaipei&ysp_redesign=1&leagues=nba&date=${formatedDateArray[2]}`,
+  );
   const data = await response.json();
   const games = data.service.scoreboard.games;
   if (!games) {
@@ -113,11 +123,13 @@ async function postNBAContract(formatedDateArray: Array<string>) {
 
   // 建立合約
   const gamesArray = Object.values(games);
-  const postNBAReses = gamesArray.map(async (game :any) => {
+  const postNBAReses = gamesArray.map(async (game: any) => {
     const postData = {
       id: game.gameid, // ex: nba.g.20231222318
       type: ContractType.Sport,
-      title: `${formatedDateArray[2]} ${NBATeamNameDictionay[game.home_team_id]} VS ${NBATeamNameDictionay[game.away_team_id]}`,
+      title: `${formatedDateArray[2]} ${
+        NBATeamNameDictionay[game.home_team_id]
+      } VS ${NBATeamNameDictionay[game.away_team_id]}`,
       description: "你覺得哪一隊會贏呢？",
       optionA: `${NBATeamNameDictionay[game.home_team_id]}`,
       optionB: `平手`,
@@ -130,16 +142,16 @@ async function postNBAContract(formatedDateArray: Array<string>) {
   });
   console.log(postNBAReses);
   return postNBAReses;
-};
+}
 
 // 建立股價合約
 async function postMarketingContract(formatedDateArray: Array<string>) {
   const weekDay = new Date(formatedDateArray[2]).getDay();
   if (weekDay === 0 || weekDay === 6) {
     return "It's weekend";
-  };
+  }
   const postMarketingReses = companyArray.map(async (company: string) => {
-    const companyCode = company.split('(')[1].split(')')[0];
+    const companyCode = company.split("(")[1].split(")")[0];
     const postData = {
       id: `m.${formatedDateArray[2]}.${companyCode}`, // ex: m.2021-09-30.2330
       type: ContractType.Marketing,
@@ -156,20 +168,18 @@ async function postMarketingContract(formatedDateArray: Array<string>) {
   });
   console.log(postMarketingReses);
   return postMarketingReses;
-};
+}
 
 // 鎖住合約
 async function blockContract(formatedDateArray: Array<string>) {
   const blockDate = formatedDateArray[1];
   await db
-  .update(contractTable)
-  .set({
-    open: false,
-  })
-  .where(eq(
-    contractTable.blockDate,blockDate
-  ))
-  .execute();
+    .update(contractTable)
+    .set({
+      open: false,
+    })
+    .where(eq(contractTable.blockDate, blockDate))
+    .execute();
 }
 
 // 執行天氣合約
@@ -183,32 +193,44 @@ async function executeWeatherContract(formatedDateArray: Array<string>) {
       totalDollar: contractTable.totalDollar,
     })
     .from(contractTable)
-    .where(and(
-      eq(
-      contractTable.updateDate, formatedDateArray[0]
+    .where(
+      and(
+        eq(contractTable.updateDate, formatedDateArray[0]),
+        eq(contractTable.type, "weather"),
       ),
-      eq(
-        contractTable.type, "weather"
-      ))
     )
     .execute();
 
   // 獲取昨日氣溫資料
-  const response = await fetch(`https://www.cwa.gov.tw/Data/js/GT/ChartData_GT24hr_T_63.js?T=${DateArray[1]}00-0`);
+  const response = await fetch(
+    `https://www.cwa.gov.tw/Data/js/GT/ChartData_GT24hr_T_63.js?T=${DateArray[1]}00-0`,
+  );
   const data = await response.text();
 
   // 獲取昨日中午 12 點 Index
-  const twelveOclockIndex = Number(data.split('\n\n')[1].split('[')[1].split(']')[0].split(',').findIndex((time) => time.startsWith("'12 ")));
+  const twelveOclockIndex = Number(
+    data
+      .split("\n\n")[1]
+      .split("[")[1]
+      .split("]")[0]
+      .split(",")
+      .findIndex((time) => time.startsWith("'12 ")),
+  );
   console.log(twelveOclockIndex);
 
   // 獲取昨日中午 12 點氣溫
-  const twelveOclockDegree =data.split('\n\n')[2].split('}},')[2].split('[')[1].split(']')[0].split(',')[twelveOclockIndex];
+  const twelveOclockDegree = data
+    .split("\n\n")[2]
+    .split("}},")[2]
+    .split("[")[1]
+    .split("]")[0]
+    .split(",")[twelveOclockIndex];
   console.log(twelveOclockDegree);
 
   // 獲取天氣合約預測氣溫
-  const forcastDegree = weatherContract[0].id.split('.')[2];
+  const forcastDegree = weatherContract[0].id.split(".")[2];
   console.log(forcastDegree);
-  
+
   let outcome;
   // 判斷昨日中午 12 點氣溫是否符合預測
   if (twelveOclockDegree < forcastDegree) {
@@ -217,7 +239,7 @@ async function executeWeatherContract(formatedDateArray: Array<string>) {
     outcome = OptionType.optionB;
   } else {
     outcome = OptionType.optionC;
-  };
+  }
 
   // 輸入結果
   const putData = {
@@ -225,7 +247,7 @@ async function executeWeatherContract(formatedDateArray: Array<string>) {
     outcome: outcome,
   };
   await putContract(putData);
-  
+
   // 計算天氣合約賠率
   const totalDollar = weatherContract[0].totalDollar;
   const outcomeDollar = weatherContract[0][`${outcome}Dollar`];
@@ -243,7 +265,7 @@ async function executeWeatherContract(formatedDateArray: Array<string>) {
     return "There isn't any bet";
   } else if (betArray === "Get bet failed") {
     throw new Error("Get bet failed");
-  };
+  }
 
   // 計算天氣合約獲利
   const profitReses = betArray.map((bet) => {
@@ -256,34 +278,34 @@ async function executeWeatherContract(formatedDateArray: Array<string>) {
     return addDollarRes;
   });
   console.log(profitReses);
-};
+}
 
 // 執行 NBA 合約
 async function executeNBAContract(formatedDateArray: Array<string>) {
   const NBAContractArray = await db
-  .select({
-    id: contractTable.id,
-    optionADollar: contractTable.optionADollar,
-    optionBDollar: contractTable.optionBDollar,
-    optionCDollar: contractTable.optionCDollar,
-    totalDollar: contractTable.totalDollar,
-  })
-  .from(contractTable)
-  .where(and(
-    eq(
-    contractTable.updateDate, formatedDateArray[0]
-    ),
-    eq(
-      contractTable.type, "sport"
-    ))
-  )
-  .execute();
+    .select({
+      id: contractTable.id,
+      optionADollar: contractTable.optionADollar,
+      optionBDollar: contractTable.optionBDollar,
+      optionCDollar: contractTable.optionCDollar,
+      totalDollar: contractTable.totalDollar,
+    })
+    .from(contractTable)
+    .where(
+      and(
+        eq(contractTable.updateDate, formatedDateArray[0]),
+        eq(contractTable.type, "sport"),
+      ),
+    )
+    .execute();
   if (!NBAContractArray) {
     return "There isn't any NBA contract";
   }
 
   // 調取昨天 NBA 對戰結果
-  const response = await fetch(`https://api-secure.sports.yahoo.com/v1/editorial/s/scoreboard?&region=TW&tz=Asia%2FTaipei&ysp_redesign=1&leagues=nba&date=${formatedDateArray[0]}`);
+  const response = await fetch(
+    `https://api-secure.sports.yahoo.com/v1/editorial/s/scoreboard?&region=TW&tz=Asia%2FTaipei&ysp_redesign=1&leagues=nba&date=${formatedDateArray[0]}`,
+  );
   const data = await response.json();
   const games = data.service.scoreboard.games;
   if (!games) {
@@ -292,7 +314,7 @@ async function executeNBAContract(formatedDateArray: Array<string>) {
   console.log(games);
 
   const gamesArray = Object.values(games);
-  const putNBAReses = gamesArray.map(async (game :any) => {
+  const putNBAReses = gamesArray.map(async (game: any) => {
     const gameid = game.gameid;
     const winner = game.winning_team_id;
     const OTorNot = game.status_display_name;
@@ -310,10 +332,12 @@ async function executeNBAContract(formatedDateArray: Array<string>) {
       id: gameid,
       outcome: outcome,
     };
-    await putContract(putData);  
+    await putContract(putData);
 
     // 獲取 NBA 合約勝隊賠率
-    const theContract = NBAContractArray.find((contract) => contract.id === gameid);
+    const theContract = NBAContractArray.find(
+      (contract) => contract.id === gameid,
+    );
     const totalDollar = theContract!.totalDollar;
     const outcomeDollar = theContract![`${outcome}Dollar`];
     const odds = totalDollar! / outcomeDollar!;
@@ -331,7 +355,7 @@ async function executeNBAContract(formatedDateArray: Array<string>) {
       return "There isn't any bet";
     } else if (betArray === "Get bet failed") {
       throw new Error("Get bet failed");
-    };
+    }
 
     // 計算 NBA 合約獲利
     const profitReses = betArray.map((bet) => {
@@ -342,33 +366,30 @@ async function executeNBAContract(formatedDateArray: Array<string>) {
       };
       const addDollarRes = addDollar(putData);
       return addDollarRes;
-    }
-    );
+    });
     console.log(profitReses);
   });
   console.log(putNBAReses);
-};
+}
 
 // 執行股價合約
 async function executeMarketingContract(formatedDateArray: Array<string>) {
   const marketingContractArray = await db
-  .select({
-    id: contractTable.id,
-    optionADollar: contractTable.optionADollar,
-    optionBDollar: contractTable.optionBDollar,
-    optionCDollar: contractTable.optionCDollar,
-    totalDollar: contractTable.totalDollar,
-  })
-  .from(contractTable)
-  .where(and(
-    eq(
-    contractTable.updateDate, formatedDateArray[0]
-    ),
-    eq(
-      contractTable.type, "marketing"
-    ))
-  )
-  .execute();
+    .select({
+      id: contractTable.id,
+      optionADollar: contractTable.optionADollar,
+      optionBDollar: contractTable.optionBDollar,
+      optionCDollar: contractTable.optionCDollar,
+      totalDollar: contractTable.totalDollar,
+    })
+    .from(contractTable)
+    .where(
+      and(
+        eq(contractTable.updateDate, formatedDateArray[0]),
+        eq(contractTable.type, "marketing"),
+      ),
+    )
+    .execute();
 
   if (!marketingContractArray) {
     return "There isn't any marketing contract";
@@ -376,17 +397,19 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
 
   const marketingContractReses = companyCodeArray.map(async (companyCode) => {
     // 調取開盤股價及漲跌幅
-    const yaerMonth = formatedDateArray[0].split('-').slice(0, 2).join('');
-    const response = await fetch(`https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY?date=${yaerMonth}&stockNo=0050&response=json`);
+    const yaerMonth = formatedDateArray[0].split("-").slice(0, 2).join("");
+    const response = await fetch(
+      `https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY?date=${yaerMonth}&stockNo=0050&response=json`,
+    );
     const data = await response.json();
     const yesterdayData = data.data[data.data.length - 1];
     console.log(yesterdayData);
-    const initialPrice = yesterdayData[3];  
+    const initialPrice = yesterdayData[3];
     console.log(initialPrice);
 
     // 計算漲跌幅
     const change = yesterdayData[7];
-    const changePercent = Math.round(change / initialPrice * 100);
+    const changePercent = Math.round((change / initialPrice) * 100);
     console.log(changePercent);
 
     let outcome;
@@ -397,7 +420,7 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
       outcome = OptionType.optionB;
     } else {
       outcome = OptionType.optionC;
-    };
+    }
 
     // 輸入結果
     const putData = {
@@ -407,8 +430,9 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
     await putContract(putData);
 
     // 獲取股價合約賠率
-    const theContract = marketingContractArray
-      .find((contract) => contract.id === `m.${formatedDateArray[0]}.${companyCode}`);
+    const theContract = marketingContractArray.find(
+      (contract) => contract.id === `m.${formatedDateArray[0]}.${companyCode}`,
+    );
     const totalDollar = theContract!.totalDollar;
     const outcomeDollar = theContract![`${outcome}Dollar`];
     const odds = totalDollar! / outcomeDollar!;
@@ -426,7 +450,7 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
       return "There isn't any bet";
     } else if (betArray === "Get bet failed") {
       throw new Error("Get bet failed");
-    };
+    }
 
     // 計算股價合約獲利
     const profitReses = betArray.map((bet) => {
@@ -437,13 +461,11 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
       };
       const addDollarRes = addDollar(putData);
       return addDollarRes;
-    }
-    );
+    });
     console.log(profitReses);
-  }
-  );
+  });
   console.log(marketingContractReses);
-};
+}
 
 export async function GET() {
   console.log("GET");
@@ -452,49 +474,45 @@ export async function GET() {
   // const NBAContract = await postNBAContract(formatedDateArray);
   // const marketingContract = await postMarketingContract(formatedDateArray);
   // await blockContract(formatedDateArray);
-  const yaerMonth = formatedDateArray[0].split('-').slice(0, 2).join('');
-  const response = await fetch(`https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY?date=${yaerMonth}&stockNo=0050&response=json`);
+  const yaerMonth = formatedDateArray[0].split("-").slice(0, 2).join("");
+  const response = await fetch(
+    `https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY?date=${yaerMonth}&stockNo=0050&response=json`,
+  );
   const data = await response.json();
   const yesterdayData = data.data[data.data.length - 1];
-  const initialPrice = yesterdayData[3];  
+  const initialPrice = yesterdayData[3];
   const change = yesterdayData[7];
-  const changePercent = change / initialPrice * 100;
+  const changePercent = (change / initialPrice) * 100;
   // const data = {
   //   // weatherContract: weatherContract,
   //   // NBAContract: NBAContract,
   //   // marketingContract: marketingContract,
   // };
   try {
-
-        return NextResponse.json(
-            {data: data},
-            { status: 200 }
-        );
-      } catch (error) {
-        return NextResponse.json(
-            { error: "Internal server error" },
-            {
-              status: 500,
-            },
-          );
-      }
-};
-
+    return NextResponse.json({ data: data }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Internal server error" },
+      {
+        status: 500,
+      },
+    );
+  }
+}
 
 export async function GET2() {
   try {
-      const response = await fetch("https://api-secure.sports.yahoo.com/v1/editorial/s/scoreboard?&region=TW&tz=Asia%2FTaipei&ysp_redesign=1&leagues=nba&date=2023-12-15");
-      const data = await response.json();
-      return NextResponse.json(
-          {data: data},
-          { status: 200 }
-      );
-    } catch (error) {
-      return NextResponse.json(
-          { error: "Internal server error" },
-          {
-            status: 500,
-          },
-        );
-    }
-};
+    const response = await fetch(
+      "https://api-secure.sports.yahoo.com/v1/editorial/s/scoreboard?&region=TW&tz=Asia%2FTaipei&ysp_redesign=1&leagues=nba&date=2023-12-15",
+    );
+    const data = await response.json();
+    return NextResponse.json({ data: data }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Internal server error" },
+      {
+        status: 500,
+      },
+    );
+  }
+}

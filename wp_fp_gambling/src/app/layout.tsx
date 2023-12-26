@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import 'bootstrap/dist/css/bootstrap.min.css';
-
+import "bootstrap/dist/css/bootstrap.min.css";
 
 // const inter = Inter({ subsets: ["latin"] });
 

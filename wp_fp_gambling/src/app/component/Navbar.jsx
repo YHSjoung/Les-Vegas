@@ -1,11 +1,11 @@
 "use client";
-import Link from 'next/link';
-import { useSelector } from 'react-redux';
-import { useNavigation } from 'next/navigation'; 
+import Link from "next/link";
+import { useSelector } from "react-redux";
+import { useNavigation } from "next/navigation";
 
 const Navbar = () => {
-    const state = useSelector((state) => state.handleCart);
-    // const navigation = useNavigation(); 
+  const state = useSelector((state) => state.handleCart);
+  // const navigation = useNavigation();
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
       <div className="container">
@@ -28,22 +28,46 @@ const Navbar = () => {
           <ul className="navbar-nav m-auto my-2 text-center">
             <li className="nav-item">
               <Link href="/">
-                <a className={`nav-link ${navigation.pathname === '/' ? 'active' : ''}`}>Home</a>
+                <a
+                  className={`nav-link ${
+                    navigation.pathname === "/" ? "active" : ""
+                  }`}
+                >
+                  Home
+                </a>
               </Link>
             </li>
             <li className="nav-item">
               <Link href="/product">
-                <a className={`nav-link ${navigation.pathname === '/product' ? 'active' : ''}`}>Products</a>
+                <a
+                  className={`nav-link ${
+                    navigation.pathname === "/product" ? "active" : ""
+                  }`}
+                >
+                  Products
+                </a>
               </Link>
             </li>
             <li className="nav-item">
               <Link href="/about">
-                <a className={`nav-link ${navigation.pathname === '/about' ? 'active' : ''}`}>About</a>
+                <a
+                  className={`nav-link ${
+                    navigation.pathname === "/about" ? "active" : ""
+                  }`}
+                >
+                  About
+                </a>
               </Link>
             </li>
             <li className="nav-item">
               <Link href="/contact">
-                <a className={`nav-link ${navigation.pathname === '/contact' ? 'active' : ''}`}>Contact</a>
+                <a
+                  className={`nav-link ${
+                    navigation.pathname === "/contact" ? "active" : ""
+                  }`}
+                >
+                  Contact
+                </a>
               </Link>
             </li>
           </ul>
@@ -60,7 +84,8 @@ const Navbar = () => {
             </Link>
             <Link href="/cart">
               <a className="btn btn-outline-dark m-2">
-                <i className="fa fa-cart-shopping mr-1"></i> Cart ({state.length})
+                <i className="fa fa-cart-shopping mr-1"></i> Cart (
+                {state.length})
               </a>
             </Link>
           </div>

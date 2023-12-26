@@ -1,16 +1,16 @@
 import { relations } from "drizzle-orm";
 import {
-    index,
-    pgTable,
-    serial,
-    varchar,
-    integer,
-    pgEnum,
-    timestamp,
-    boolean,
-    date,
-  } from "drizzle-orm/pg-core";
-  
+  index,
+  pgTable,
+  serial,
+  varchar,
+  integer,
+  pgEnum,
+  timestamp,
+  boolean,
+  date,
+} from "drizzle-orm/pg-core";
+
 export const usersTable = pgTable(
   "users",
   {
@@ -25,8 +25,8 @@ export const usersTable = pgTable(
   }),
 );
 
-export const typeEnum = pgEnum('type', ['sport', 'weather', 'marketing']);
-export const outcomeEnum = pgEnum('outcome', ['optionA', 'optionB', 'optionC']);
+export const typeEnum = pgEnum("type", ["sport", "weather", "marketing"]);
+export const outcomeEnum = pgEnum("outcome", ["optionA", "optionB", "optionC"]);
 
 export const contractTable = pgTable(
   "contract",

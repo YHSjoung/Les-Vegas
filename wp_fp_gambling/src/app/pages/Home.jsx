@@ -8,7 +8,7 @@ function Home() {
       <Product />
       <Footer />
     </>
-  )
+  );
 }
 
-export default Home
+export default Home;

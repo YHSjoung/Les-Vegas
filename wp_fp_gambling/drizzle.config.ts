@@ -1,10 +1,10 @@
-import dotenv from 'dotenv';
-import type { Config } from 'drizzle-kit';
+import dotenv from "dotenv";
+import type { Config } from "drizzle-kit";
 
-dotenv.config({ path: './.env.local' });
+dotenv.config({ path: "./.env.local" });
 
 if (!process.env.NEXT_PUBLIC_POSTGRES_URL) {
-  throw new Error('DATABASE_URL is not set');
+  throw new Error("DATABASE_URL is not set");
 }
 
 export default {

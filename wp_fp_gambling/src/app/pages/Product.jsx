@@ -25,7 +25,7 @@ const Product = () => {
       setProduct(data);
       setLoading(false);
       const response2 = await fetch(
-        `https://fakestoreapi.com/products/category/${data.category}`
+        `https://fakestoreapi.com/products/category/${data.category}`,
       );
       const data2 = await response2.json();
       setSimilarProducts(data2);

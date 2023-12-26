@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 const Products = () => {
   const [data, setData] = useState([]);
-  const [filter, setFilter] = useState([]);  // 使用 filter 来存储过滤后的数据
+  const [filter, setFilter] = useState([]); // 使用 filter 来存储过滤后的数据
   const [loading, setLoading] = useState(false);
   let componentMounted = true;
 
@@ -25,7 +25,7 @@ const Products = () => {
       if (componentMounted) {
         const products = await response.json();
         setData(products);
-        setFilter(products);  
+        setFilter(products);
         setLoading(false);
       }
 
@@ -50,7 +50,7 @@ const Products = () => {
 
   const filterProduct = (cat) => {
     if (cat === "All") {
-      setFilter(data);  // 显示所有产品
+      setFilter(data); // 显示所有产品
     } else {
       const updatedList = data.filter((item) => item.category === cat);
       setFilter(updatedList);
@@ -73,7 +73,11 @@ const Products = () => {
         {filter.map((product) => {
           console.log(product);
           return (
-            <div id={product.id} key={product.id} className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
+            <div
+              id={product.id}
+              key={product.id}
+              className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4"
+            >
               <div className="card text-center h-100" key={product.id}>
                 <img
                   className="card-img-top p-3"
@@ -104,7 +108,6 @@ const Products = () => {
                 </div> */}
               </div>
             </div>
-
           );
         })}
       </>
