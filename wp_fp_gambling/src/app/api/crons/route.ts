@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { contractTable } from "@/db/schema";
 import { db } from "@/db";
+import { eq, and,} from "drizzle-orm";
+import { env } from "@/lib/env";
+import { postContract, ContractType } from "@/controler/contract";
+
+// 建立公司名稱、代碼字典
+const companyArray = ["長榮(2603)", "台積電(2330)", "開發金(2883)"];
+const companyCodeArray = ["2603", "2330", "2883"];
 
 // 建立昨天、今天、明天、後天的日期
 const today = new Date();
@@ -58,9 +65,9 @@ function formateDate(DateArray: Array<string|number|Date>) {
   }
   return formatedDateArray;
 };
+
 // 建立天氣合約
-async function postWeatherContract() {
-  const formatedDateArray = formateDate(DateArray);
+async function postWeatherContract(formatedDateArray: Array<string>) {
 
   // 格式化天氣日期 YYYYMMDD
   const weatherDateArray = [];
@@ -75,26 +82,26 @@ async function postWeatherContract() {
   console.log(forcastDegree);
 
   // 建立合約
-  const res = await fetch("/api/contract", {
-    method: "POST",
-    body: JSON.stringify({
-      type: "weather",
-      title: `台北市大安區 ${DateArray[2]} 中午 12 點氣溫`,
-      description: "你覺得明天的氣溫會是多少呢？",
-      optionA: `${forcastDegree}度以下`,
-      optionB: `${forcastDegree}度 ~ ${forcastDegree + 1}度`,
-      optionC: `${forcastDegree + 1}度以上`,
-      blockeDate: DateArray[2],
-      updateDate: DateArray[3],
-    }),
-  });
-  const data = await res.json();
-  return data;
+  const postData = {
+    id: `w.${formatedDateArray[2]}.${forcastDegree}`, // ex: w.2021-09-30.12
+    type: ContractType.Weather,
+    title: `台北市大安區 ${formatedDateArray[2]} 中午 12 點氣溫`,
+    description: "你覺得明天的氣溫會是多少呢？",
+    optionA: `${forcastDegree}度以下`,
+    optionB: `${forcastDegree}度`,
+    optionC: `${forcastDegree + 1}度以上`,
+    blockDate: formatedDateArray[2],
+    updateDate: formatedDateArray[3],
+  };
+  const newContract = await postContract(postData);
+  console.log(newContract);
+  return newContract;
 };
+
 // 建立 NBA 合約
-async function postNBAContract() {
+async function postNBAContract(formatedDateArray: Array<string>) {
   // 調取明天 NBA 明天賽程
-  const response = await fetch(`https://api-secure.sports.yahoo.com/v1/editorial/s/scoreboard?&region=TW&tz=Asia%2FTaipei&ysp_redesign=1&leagues=nba&date=${DateArray[2]}`);
+  const response = await fetch(`https://api-secure.sports.yahoo.com/v1/editorial/s/scoreboard?&region=TW&tz=Asia%2FTaipei&ysp_redesign=1&leagues=nba&date=${formatedDateArray[2]}`);
   const data = await response.json();
   const games = data.service.scoreboard.games;
   if (!games) {
@@ -105,115 +112,185 @@ async function postNBAContract() {
   // 建立合約
   const gamesArray = Object.values(games);
   const postNBAReses = gamesArray.map(async (game :any) => {
-    const res = await fetch("/api/contract", {
-      method: "POST",
-      body: JSON.stringify({
-        type: "NBA",
-        title: `${DateArray[2]} ${NBATeamNameDictionay[game.home_team_id]} VS ${NBATeamNameDictionay[game.away_team_id]}`,
-        description: "你覺得哪一隊會贏呢？",
-        optionA: `${NBATeamNameDictionay[game.home_team_id]}`,
-        optionB: `平手`,
-        optionC: `${NBATeamNameDictionay[game.away_team_id]}`,
-        blockeDate: DateArray[2],
-        updateDate: DateArray[3],
-      }),
-    });
-    const data = await res.json();
-    return data;
-    // return {
-    //   home_team_id: game.home_team_id,
-    //   away_team_id: game.away_team_id,
-    //   total_home_points: game.total_home_points,
-    //   total_away_points: game.total_away_points,
-    //   status_displayname: game.status_displayname,
-    //   winning_team_id: game.winning_team_id,
-    // };
+    const postData = {
+      id: game.gameid, // ex: nba.g.2021-09-30.20231222318
+      type: ContractType.Sport,
+      title: `${formatedDateArray[2]} ${NBATeamNameDictionay[game.home_team_id]} VS ${NBATeamNameDictionay[game.away_team_id]}`,
+      description: "你覺得哪一隊會贏呢？",
+      optionA: `${NBATeamNameDictionay[game.home_team_id]}`,
+      optionB: `平手`,
+      optionC: `${NBATeamNameDictionay[game.away_team_id]}`,
+      blockDate: formatedDateArray[2],
+      updateDate: formatedDateArray[3],
+    };
+    const newContract = await postContract(postData);
+    return newContract;
   });
   console.log(postNBAReses);
   return postNBAReses;
 };
-// 建立股價合約
-async function postMarketingContract() {
-  const formatedDateArray = formateDate(DateArray);
-  const companyArray = ["長榮 (2603)", "台積電(2330)", "開發金(2883)"];
 
-  const postMarketingReses = companyArray.map(async (company) => {
-    const res = await fetch("/api/contract", {
-      method: "POST",
-      body: JSON.stringify({
-        type: "marketing",
-        title: `${formatedDateArray[2]} ${company} 股價漲跌`,
-        description: `你覺得明天 ${company} 股價漲跌多少 %?`,
-        optionA: `-1.5% 以下`,
-        optionB: `-1.5% ~ 1.5%`,
-        optionC: `1.5% 以上`,
-        blockeDate: formatedDateArray[2],
-        updateDate: formatedDateArray[3],
-      }),
-    });
-    const data = await res.json();
-    return data;
+// 建立股價合約
+async function postMarketingContract(formatedDateArray: Array<string>) {
+  const postMarketingReses = companyArray.map(async (company: string) => {
+    const companyCode = company.split('(')[1].split(')')[0];
+    const postData = {
+      id: `m.${formatedDateArray[2]}.${companyCode}`, // ex: m.2021-09-30.2330
+      type: ContractType.Marketing,
+      title: `${formatedDateArray[2]} ${company} 股價漲跌`,
+      description: `你覺得明天 ${company} 股價漲跌多少 %?`,
+      optionA: `-1.5% 以下`,
+      optionB: `-1.5% ~ 1.5%`,
+      optionC: `1.5% 以上`,
+      blockDate: formatedDateArray[2],
+      updateDate: formatedDateArray[3],
+    };
+    const newContract = await postContract(postData);
+    return newContract;
   });
   console.log(postMarketingReses);
   return postMarketingReses;
 };
 
-async function updateWeatherContract() {
+// 鎖住合約
+async function blockContract() {
   const formatedDateArray = formateDate(DateArray);
-  
+  const blockDate = formatedDateArray[1];
+  await db
+  .update(contractTable)
+  .set({
+    open: false,
+  })
+  .where(eq(
+    contractTable.blockDate,blockDate
+  ))
+  .execute();
 }
 
+// 執行天氣合約
+async function executeWeatherContract() {
+  const formatedDateArray = formateDate(DateArray);
+  const weatherContract = await db
+    .select({
+      id: contractTable.id,
+      optionADollat: contractTable.optionADollar,
+      optionBDollat: contractTable.optionBDollar,
+      optionCDollat: contractTable.optionCDollar,
+      totalDollat: contractTable.totalDollar,
+    })
+    .from(contractTable)
+    .where(and(
+      eq(
+      contractTable.updateDate, formatedDateArray[0]
+      ),
+      eq(
+        contractTable.type, "weather"
+      ))
+    )
+    .execute();
+
+  // 獲取昨日氣溫資料
+  const response = await fetch(`https://www.cwa.gov.tw/Data/js/GT/ChartData_GT24hr_T_63.js?T=${DateArray[1]}00-0`);
+  const data = await response.text();
+
+  // 獲取昨日中午 12 點 Index
+  const twelveOclockIndex = Number(data.split('\n\n')[1].split('[')[1].split(']')[0].split(',').findIndex((time) => time.startsWith("'12 ")));
+  console.log(twelveOclockIndex);
+
+  // 獲取昨日中午 12 點氣溫
+  const twelveOclockDegree =data.split('\n\n')[2].split('}},')[2].split('[')[1].split(']')[0].split(',')[twelveOclockIndex];
+  console.log(twelveOclockDegree);
+
+  // 獲取天氣合約預測氣溫
+  const forcastDegree = weatherContract[0].id.split('.')[2];
+  console.log(forcastDegree);
+
+  // 判斷昨日中午 12 點氣溫是否符合預測
+  if (twelveOclockDegree < forcastDegree) {
+    const outcome = "optionA";
+    const res = await fetch(`/api/contract/${weatherContract[0].id}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        outcome: outcome,
+      }),
+    });
+    const data = await res.json();
+    return data;
+  } else if (twelveOclockDegree == forcastDegree) {
+    const outcome = "optionB";
+    const res = await fetch(`/api/contract/${weatherContract[0].id}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        outcome: outcome,
+      }),
+    });
+    const data = await res.json();
+    return data;
+  } else {
+    const outcome = "optionC";
+    const res = await fetch(`/api/contract/${weatherContract[0].id}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        outcome: outcome,
+      }),
+    });
+    const data = await res.json();
+    return data;
+  };
+
+};
 
 
+// const NBAContractArray = await db
+// .select({
+//   id: contractTable.id,
+// })
+// .from(contractTable)weatherContract
+// .where(and(
+//   eq(
+//   contractTable.updateDate, formatedDateArray[0]
+//   ),
+//   eq(
+//     contractTable.type, "sport"
+//   ))
+// )
+// .execute();
 
+// const marketingContractArray = await db
+// .select({
+//   id: contractTable.id,
+// })
+// .from(contractTable)
+// .where(and(
+//   eq(
+//   contractTable.updateDate, formatedDateArray[0]
+//   ),
+//   eq(
+//     contractTable.type, "marketing"
+//   ))
+// )
+// .execute();
 `https://www.cwa.gov.tw/Data/js/GT/ChartData_GT24hr_T_63.js?T=${DateArray[1]}00-0`
 
 // [2603(長榮), 2330(台積電), 2883(開發金)]
 // const response = await fetch('https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY?date=20231201&stockNo=0050&response=json');
 
 export async function GET() {
+  console.log("GET");
+  const formatedDateArray = formateDate(DateArray);
+  const weatherContract = await postWeatherContract(formatedDateArray);
+  const NBAContract = await postNBAContract(formatedDateArray);
+  const marketingContract = await postMarketingContract(formatedDateArray);
+  const data = {
+    weatherContract: weatherContract,
+    NBAContract: NBAContract,
+    marketingContract: marketingContract,
+  };
+  console.log(data);
   try {
-    const formatedDateArray = formateDate(DateArray);
 
-    const response = await fetch('https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY?date=20231201&stockNo=0050&response=json');
-    const data = await response.json();
-      const games = data.service.scoreboard.games;
-      if (!games) {
-          return NextResponse.json(
-            { error: "There isn't any game tomorrow" },
-            {
-              status: 500,
-            },
-          );
-        }
-        console.log(games);
-        const gamesArray = Object.values(games);
-        const gameScore = gamesArray.map(async (game :any) => {
-          const res = await fetch("/api/contract", {
-            method: "POST",
-            body: JSON.stringify({
-              type: "NBA",
-              title: `${DateArray[2]} ${NBATeamNameDictionay[game.home_team_id]} VS ${NBATeamNameDictionay[game.away_team_id]}`,
-              description: "你覺得哪一隊會贏呢？",
-              optionA: `${NBATeamNameDictionay[game.home_team_id]}`,
-              optionB: `平手`,
-              optionC: `${NBATeamNameDictionay[game.away_team_id]}`,
-              blockeDate: DateArray[2],
-              updateDate: DateArray[3],
-            }),
-          });
-          // return {
-          //   home_team_id: game.home_team_id,
-          //   away_team_id: game.away_team_id,
-          //   total_home_points: game.total_home_points,
-          //   total_away_points: game.total_away_points,
-          //   status_displayname: game.status_displayname,
-          //   winning_team_id: game.winning_team_id,
-          // };
-        });
-        console.log(gameScore);
         return NextResponse.json(
-            {data: data.service.scoreboard.games},
+            {data: data},
             { status: 200 }
         );
       } catch (error) {

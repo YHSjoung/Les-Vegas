@@ -25,33 +25,33 @@ export const usersTable = pgTable(
   }),
 );
 
-const typeEnum = pgEnum('type', ['sport', 'weather', 'marketing']);
-const outcomeEnum = pgEnum('outcome', ['optionA', 'optionB', 'optionC']);
-
+export const typeEnum = pgEnum('type', ['sport', 'weather', 'marketing']);
+export const outcomeEnum = pgEnum('outcome', ['optionA', 'optionB', 'optionC']);
 
 export const contractTable = pgTable(
   "contract",
   {
-    id: serial("id").primaryKey(),
+    id: varchar("id").primaryKey(),
     type: typeEnum("type").notNull(),
     title: varchar("title").notNull(),
     description: varchar("description").notNull(),
     optionA: varchar("optionA").default(""),
     optionB: varchar("optionB").default(""),
     optionC: varchar("optionC").default(""),
-    dollar: integer("dollar").default(0),
+    optionADollar: integer("optionADollar").default(0),
+    optionBDollar: integer("optionBDollar").default(0),
+    optionCDollar: integer("optionCDollar").default(0),
+    totalDollar: integer("dollar").default(0),
     attendees: integer("attendees").default(0),
-    blockDate: date("blockDate",{mode: "string"}),
-    updateDate: date("updateDate",{mode : "string"}),
+    blockDate: varchar("blockDate"),
+    updateDate: varchar("updateDate"),
     open: boolean("open").default(true),
     outcome: outcomeEnum("outcome"),
   },
   (table) => ({
-    idIndex: index("id_index").on(table.id),
-    titleIndex: index("title_index").on(table.title),
-    typeIndex: index("type_index").on(table.type),
-    dollarIndex: index("public_index").on(table.open),
-    attendeesIndex: index("attendees_index").on(table.attendees),
+    idIndex: index("contract_id_index").on(table.id),
+    titleIndex: index("contract_title_index").on(table.title),
+    typeIndex: index("contract_type_index").on(table.type),
   }),
 );
 
@@ -66,9 +66,9 @@ export const betsTable = pgTable(
     createdAt: timestamp("createdAt").defaultNow(),
   },
   (table) => ({
-    idIndex: index("id_index").on(table.id),
-    userIdIndex: index("userId_index").on(table.userId),
-    contractIdIndex: index("contractId_index").on(table.contractId),
-    dollarIndex: index("dollar_index").on(table.dollar),
+    idIndex: index("bet_id_index").on(table.id),
+    userIdIndex: index("bet_userId_index").on(table.userId),
+    contractIdIndex: index("bet_contractId_index").on(table.contractId),
+    dollarIndex: index("bet_dollar_index").on(table.dollar),
   }),
 );

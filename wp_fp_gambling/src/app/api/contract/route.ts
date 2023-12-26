@@ -3,31 +3,24 @@ import type { NextRequest } from "next/server";
 import { eq, } from "drizzle-orm";
 import z from "zod";
 import { db } from "@/db";
-import { usersTable, contractTable, betsTable } from "@/db/schema";
+import { contractTable } from "@/db/schema";
+import { postContract } from "@/controler/contract";
 
 const GetContractSchema = z.object({
-    contractId: z.number(),
+    contractId: z.string(),
 });
 type GetContractType = z.infer<typeof GetContractSchema>;
 
-const PostContractsSchema = z.object({
-    type: z.enum(["sport", "weather", "marketing"]),
-    title: z.string(),
-    description: z.string(),
-    optionA: z.string(),
-    optionB: z.string(),
-    optionC: z.string(),
-    blockDate: z.string(),
-    updateDate: z.string(),
-});
-type PostContractsType = z.infer<typeof PostContractsSchema>;
 
 const PutConractSchema = z.object({
-    contractId: z.number(),
+    contractId: z.string(),
     typeId: z.string(),
     open: z.boolean().optional(),
     outcome: z.enum(["optionA", "optionB", "optionC"]).optional(),
-    dollar: z.number().optional(),
+    totalDollar: z.number().optional(),
+    optionADollar: z.number().optional(),
+    optionBDollar: z.number().optional(),
+    optionCDollar: z.number().optional(),
 });
 type PutConractType = z.infer<typeof PutConractSchema>;
 
@@ -52,7 +45,10 @@ export async function GET(request: NextRequest) {
             optionA: contractTable.optionA,
             optionB: contractTable.optionB,
             optionC: contractTable.optionC,
-            dollar: contractTable.dollar,
+            optionADollar: contractTable.optionADollar,
+            optionBDollar: contractTable.optionBDollar,
+            optionCDollar: contractTable.optionCDollar,
+            totalDollar: contractTable.totalDollar,
             attendees: contractTable.attendees,
             blockDate: contractTable.blockDate,
             updateDate: contractTable.updateDate,
@@ -81,35 +77,11 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     const data = await request.json();
     try {
-        PostContractsSchema.parse(data);
-    } catch (error) {
-        return  NextResponse.json(
-            { error: "Bad Request",},
-            { status: 400,}
-        );
-    }
-    const { type, title, description, optionA, optionB, optionC, blockDate, updateDate} = data as PostContractsType;
-    try {
-        const newContract = await db
-        .insert(contractTable)
-        .values({
-            type: type,
-            title: title,
-            description: description,
-            optionA: optionA,
-            optionB: optionB,
-            optionC: optionC,
-            blockDate: blockDate,
-            updateDate: updateDate,
-        })
-        .returning()
-        .execute();
-        console.log(newContract);
+        const newContract = await postContract(data);    
         return NextResponse.json(
             { data: newContract, },
             { status: 200, },
         );
-
     } catch (error) {
         return NextResponse.json(
             { error: "Something went wrong" },
@@ -128,14 +100,17 @@ export async function PUT(request: NextRequest) {
             { status: 400,}
         );
     }
-    const { contractId, open, outcome, dollar } = data as PutConractType;
+    const { contractId, open, outcome, totalDollar, optionADollar, optionBDollar, optionCDollar } = data as PutConractType;
     try {
         const updateContract = await db
         .update(contractTable)
         .set({
             open: open,
             outcome: outcome,
-            dollar: dollar,
+            totalDollar: totalDollar,
+            optionADollar: optionADollar,
+            optionBDollar: optionBDollar,
+            optionCDollar: optionCDollar,
         })
         .where(
             eq(contractTable.id, contractId),
