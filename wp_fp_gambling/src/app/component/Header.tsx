@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { auth, UserButton } from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
 import Head from "next/head";
 
-const Header = () => {
-  const { userId } = auth();
+const Header = ({userId}: {userId: string}) => {
 
   return (
     <>
@@ -15,17 +14,41 @@ const Header = () => {
           crossOrigin="anonymous"
         />
       </Head>
-
       <nav className="py-4 px-4 flex items-center justify-between">
-        <Link href="/" className="text-black text-xl font-bold">
-          As Vagas
+      <div className="container">
+        <Link href="/">
+            Las Vagas
         </Link>
+
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul className="navbar-nav m-auto my-2 text-center">
+            <li className="nav-item">
+              <Link href="/" className="text-red-500">
+                Home
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link href="/product">
+                  Products
+              </Link>
+            </li>
+            <li className="nav-item">
+            </li>
+          </ul>
+        </div>
+        <div className="buttons text-center">
+            <Link href="/cart" className="border p-2 rounded-lg text-xl">
+                <i className="fa fa-cart-shopping m-1"></i> Cart
+            </Link>
+        </div>
+      </div>
         {!userId && (
-          <Link href="/signIn" className="text-black text-xl font-bold">
+          <Link href="/signIn" className="text-white text-xl font-bold">
             SignIn
           </Link>
         )}
         <UserButton afterSignOutUrl="/" />
+
       </nav>
     </>
   );

@@ -8,7 +8,7 @@ export default function Home() {
   console.log(userId);
   return (
     <>
-      <Header />
+      <Header userId={userId!}/>
       <Main />
       <Wrapper />
       <Footer />
