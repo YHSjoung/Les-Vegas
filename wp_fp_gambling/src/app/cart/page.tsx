@@ -1,10 +1,11 @@
 import React from "react";
-import { Footer, Navbar } from "../components";
+import { Footer, Navbar } from "../component";
 import { useSelector, useDispatch } from "react-redux";
 import { addCart, delCart } from "../redux/action";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
-const Cart = () => {
+const Cart = ({userId}: {userId: string}) => {
+  
   const state = useSelector((state) => state.handleCart);
   const dispatch = useDispatch();
 
@@ -14,7 +15,7 @@ const Cart = () => {
         <div className="row">
           <div className="col-md-12 py-5 bg-light text-center">
             <h4 className="p-3 display-5">Your Cart is Empty</h4>
-            <Link to="/" className="btn  btn-outline-dark mx-4">
+            <Link href="/" className="btn  btn-outline-dark mx-4">
               <i className="fa fa-arrow-left"></i> Continue Shopping
             </Link>
           </div>
