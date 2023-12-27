@@ -29,8 +29,9 @@ const Navbar = () => {
             <li className="nav-item">
               <Link href="/">
                 <a
-                  className={`nav-link ${navigation.pathname === "/" ? "active" : ""
-                    }`}
+                  className={`nav-link ${
+                    navigation.pathname === "/" ? "active" : ""
+                  }`}
                 >
                   Home
                 </a>
@@ -39,8 +40,9 @@ const Navbar = () => {
             <li className="nav-item">
               <Link href="/product">
                 <a
-                  className={`nav-link ${navigation.pathname === "/product" ? "active" : ""
-                    }`}
+                  className={`nav-link ${
+                    navigation.pathname === "/product" ? "active" : ""
+                  }`}
                 >
                   Products
                 </a>
@@ -49,8 +51,9 @@ const Navbar = () => {
             <li className="nav-item">
               <Link href="/about">
                 <a
-                  className={`nav-link ${navigation.pathname === "/about" ? "active" : ""
-                    }`}
+                  className={`nav-link ${
+                    navigation.pathname === "/about" ? "active" : ""
+                  }`}
                 >
                   About
                 </a>
@@ -59,8 +62,9 @@ const Navbar = () => {
             <li className="nav-item">
               <Link href="/contact">
                 <a
-                  className={`nav-link ${navigation.pathname === "/contact" ? "active" : ""
-                    }`}
+                  className={`nav-link ${
+                    navigation.pathname === "/contact" ? "active" : ""
+                  }`}
                 >
                   Contact
                 </a>

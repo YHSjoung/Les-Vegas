@@ -4,8 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addCart, delCart } from "../redux/action";
 import Link from "next/link";
 
-const Cart = ({userId}: {userId: string}) => {
-  
+const Cart = ({ userId }: { userId: string }) => {
   const state = useSelector((state) => state.handleCart);
   const dispatch = useDispatch();
 

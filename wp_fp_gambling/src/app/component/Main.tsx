@@ -1,7 +1,13 @@
-import React from "react";
+// Desc: Home page of the app
+// Path: wp_fp_gambling/src/app/component/main.tsx
+// Usage:
+// import { Main } from "./component";
+//
+// <Main />
+//
+// ------------------------------------------------------------------
 
-
-const Home = () => {
+export default function Main() {
   return (
     <>
       <div className="hero border-1 pb-3">
@@ -18,7 +24,8 @@ const Home = () => {
                 Predict the Unpredictable
               </h5>
               <p className="card-text fs-5 d-none d-sm-block ">
-                Bet on the Future: Weather, Stocks, Games - Where Thrills Meet Forecast !
+                Bet on the Future: Weather, Stocks, Games - Where Thrills Meet
+                Forecast !
               </p>
             </div>
           </div>
@@ -26,6 +33,4 @@ const Home = () => {
       </div>
     </>
   );
-};
-
-export default Home;
+}
