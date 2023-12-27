@@ -255,6 +255,7 @@ async function executeWeatherContract(formatedDateArray: Array<string>) {
   // 獲取天氣合約下注資料
   const getBetData = {
     contractId: weatherContract[0].id,
+    outcome: outcome,
     forWhat: forWhat.contract,
   };
   const betArray = await getBet(getBetData);
@@ -345,6 +346,7 @@ async function executeNBAContract(formatedDateArray: Array<string>) {
     // 獲取 NBA 合約下注資料
     const getBetData = {
       contractId: theContract!.id,
+      outcome: outcome,
       forWhat: forWhat.contract,
     };
     const betArray = await getBet(getBetData);
@@ -440,6 +442,7 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
     // 獲取股價合約下注資料
     const getBetData = {
       contractId: theContract!.id,
+      outcome: outcome,
       forWhat: forWhat.contract,
     };
     const betArray = await getBet(getBetData);

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { db } from "@/db";
 import { betsTable } from "@/db/schema";
 import z from "zod";
@@ -9,7 +9,7 @@ const PostBetSchema = z.object({
   option: z.enum(["optionA", "optionB", "optionC"]),
   dollar: z.number(),
 });
-type PostBetType = z.infer<typeof PostBetSchema>;
+export type PostBetType = z.infer<typeof PostBetSchema>;
 
 export enum forWhat {
   user = "user",
@@ -19,10 +19,12 @@ export enum forWhat {
 const GetBetSchema = z.object({
   userId: z.string().optional(),
   contractId: z.string().optional(),
+  outcome: z.enum(["optionA", "optionB", "optionC"]).optional(),
   forWhat: z.enum(["user", "contract"]),
 });
 type GetBetType = z.infer<typeof GetBetSchema>;
 
+// 下注
 export async function postBet(data: PostBetType) {
   try {
     PostBetSchema.parse(data);
@@ -46,13 +48,14 @@ export async function postBet(data: PostBetType) {
   }
 }
 
+// 取得所有下注
 export async function getBet(data: GetBetType) {
   try {
     GetBetSchema.parse(data);
   } catch (error) {
     return "Get data does not match schema";
   }
-  const { userId, contractId, forWhat } = data as GetBetType;
+  const { userId, contractId, outcome, forWhat } = data as GetBetType;
   try {
     if (forWhat === "user") {
       const bet = await db
@@ -77,7 +80,12 @@ export async function getBet(data: GetBetType) {
           dollar: betsTable.dollar,
         })
         .from(betsTable)
-        .where(eq(betsTable.contractId, contractId!))
+        .where(
+          and(
+            eq(betsTable.contractId, contractId!),
+            eq(betsTable.option, outcome!),
+          ),
+        )
         .execute();
       return bet;
     }

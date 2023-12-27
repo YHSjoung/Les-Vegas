@@ -13,7 +13,12 @@ export default function Home() {
       <Wrapper />
       <Footer />
 
-      <TestAPI />
+      <TestAPI
+        userId={userId!}
+        contractId="m.2023-12-27.2330"
+        option="optionA"
+        dollar={100}
+      />
     </>
   );
 }
