@@ -18,7 +18,7 @@ const Header = () => {
 
       <nav className="py-4 px-4 flex items-center justify-between">
         <Link href="/" className="text-black text-xl font-bold">
-          Gambling
+          As Vagas
         </Link>
         {!userId && (
           <Link href="/signIn" className="text-black text-xl font-bold">
