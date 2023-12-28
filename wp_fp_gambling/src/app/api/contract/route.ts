@@ -6,19 +6,8 @@ import { db } from "@/db";
 import { contractTable } from "@/db/schema";
 import { postContract, putContract } from "@/controler/contract";
 
-const GetContractSchema = z.object({
-  contractId: z.string(),
-});
-type GetContractType = z.infer<typeof GetContractSchema>;
-
 export async function GET(request: NextRequest) {
-  const data = await request.json();
-  try {
-    GetContractSchema.parse(data);
-  } catch (error) {
-    return NextResponse.json({ error: "Bad Request" }, { status: 400 });
-  }
-  const { contractId } = data as GetContractType;
+  const contractId = request.nextUrl.searchParams.get("contractId");
   try {
     const contract = await db
       .select({
@@ -40,7 +29,7 @@ export async function GET(request: NextRequest) {
         outcome: contractTable.outcome,
       })
       .from(contractTable)
-      .where(eq(contractTable.id, contractId))
+      .where(eq(contractTable.id, contractId!))
       .execute();
     console.log(contract);
     return NextResponse.json({ data: contract }, { status: 200 });
