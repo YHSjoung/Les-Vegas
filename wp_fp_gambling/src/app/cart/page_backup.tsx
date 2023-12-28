@@ -4,9 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Link from "next/link";
 
 const Cart = ({ userId }: { userId: string }) => {
-
   const state = useSelector((state: any) => state.handleCart);
-
 
   const EmptyCart = () => {
     return (
@@ -22,7 +20,6 @@ const Cart = ({ userId }: { userId: string }) => {
       </div>
     );
   };
-
 
   // const removeItem = (product) => {
   //   dispatch(delCart(product));

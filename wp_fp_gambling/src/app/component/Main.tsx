@@ -10,7 +10,7 @@
 export default function Main() {
   return (
     <>
-      <div className="p-11"/> 
+      <div className="p-11" />
       <div className="hero pb-3">
         <div className="card bg-dark text-white border-0 mx-3">
           <img
@@ -20,7 +20,7 @@ export default function Main() {
             height={500}
           />
           <div className="card-img-overlay d-flex align-items-center gap-100 bg-opacity-70 bg-gray-900">
-            <div className="py-100"/>
+            <div className="py-100" />
             <div className="container ">
               <p className="card-title fs-1 text-4xl">
                 Predict the Unpredictable

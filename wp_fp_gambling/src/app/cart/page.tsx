@@ -9,26 +9,23 @@ import { betsTable, contractTable, usersTable } from "@/db/schema";
 import Bet from "../component/Bet";
 import { auth, UserButton } from "@clerk/nextjs";
 
-
-
 export default async function Cart() {
   const { userId } = auth();
   console.log(userId);
   const dollar = await db
-  .select({
-    dollar: usersTable.dollar,
-  })
-  .from(usersTable)
-  .where(eq(usersTable.id, userId!))
-  .execute();
+    .select({
+      dollar: usersTable.dollar,
+    })
+    .from(usersTable)
+    .where(eq(usersTable.id, userId!))
+    .execute();
 
-let dollarNum;
-if (dollar.length === 0) {
-  dollarNum = null;
-} else {
-  dollarNum = dollar[0].dollar;
-}
-
+  let dollarNum;
+  if (dollar.length === 0) {
+    dollarNum = null;
+  } else {
+    dollarNum = dollar[0].dollar;
+  }
 
   const betSubquery = db.$with("attend_or_not").as(
     db
@@ -44,7 +41,7 @@ if (dollar.length === 0) {
       .where(eq(betsTable.userId, userId!)),
   );
 
-  const bets = await db 
+  const bets = await db
     .with(betSubquery)
     .select({
       id: betSubquery.id,
@@ -68,85 +65,85 @@ if (dollar.length === 0) {
   return (
     <>
       {/* <Navbar /> */}
-      <Header userId={userId!} dollar={dollarNum}/>
-      <div className="p-11"/> 
+      <Header userId={userId!} dollar={dollarNum} />
+      <div className="p-11" />
       <div className="container my-3 py-3">
-          <p className="text-center font-bold text-4xl z-5 mb-2">Cart</p>
-          <hr />
+        <p className="text-center font-bold text-4xl z-5 mb-2">Cart</p>
+        <hr />
         <>
-            <section className="h-100 gradient-custom">
-                <div className="container py-5">
-                    <div className="row d-flex justify-content-center my-4">
-                        <div className="col-md-8">
-                            <div className="card mb-4">
-                                <div className="card-header py-3 font-bold text-2xl ml-4">
-                                    Bet List
-                                </div>
-                                <div className="card-body">
-                                    {bets.map((bet) => {
-                                      return(
-                                      <Bet
-                                        key={bet.id}
-                                        id={bet.id}
-                                        contractId={bet.contractId!}
-                                        type={bet.type}
-                                        title={bet.title}
-                                        optionA={bet.optionA!}
-                                        optionB={bet.optionB!}
-                                        optionC={bet.optionC!}
-                                        blockDate={bet.blockDate!}
-                                        updateDate={bet.updateDate!}
-                                        option={bet.option!}
-                                        dollar={bet.dollar!}
-                                        status={bet.status!}
-                                      />
-                                      );
-                                    })}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-4">
-                            <div className="card mb-4">
-                                <div className="card-header py-3 bg-light">
-                                    <h5 className="mb-0">Order Summary</h5>
-                                </div>
-                                <div className="card-body">
-                                    <ul className="list-group list-group-flush">
-                                        <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                                            Products ({bets.length})
-                                            {/* <span>${Math.round(subtotal)}</span> */}
-                                        </li>
-                                        <li className="list-group-item d-flex justify-content-between align-items-center px-0">
-                                            Shipping
-                                            {/* <span>${shipping}</span> */}
-                                        </li>
-                                        <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
-                                            <div>
-                                                <strong>Total amount</strong>
-                                            </div>
-                                            <span>
-                                                {/* <strong>${Math.round(subtotal + shipping)}</strong> */}
-                                            </span>
-                                        </li>
-                                    </ul>
+          <section className="h-100 gradient-custom">
+            <div className="container py-5">
+              <div className="row d-flex justify-content-center my-4">
+                <div className="col-md-8">
+                  <div className="card mb-4">
+                    <div className="card-header py-3 font-bold text-2xl ml-4">
+                      Bet List
+                    </div>
+                    <div className="card-body">
+                      {bets.map((bet) => {
+                        return (
+                          <Bet
+                            key={bet.id}
+                            id={bet.id}
+                            contractId={bet.contractId!}
+                            type={bet.type}
+                            title={bet.title}
+                            optionA={bet.optionA!}
+                            optionB={bet.optionB!}
+                            optionC={bet.optionC!}
+                            blockDate={bet.blockDate!}
+                            updateDate={bet.updateDate!}
+                            option={bet.option!}
+                            dollar={bet.dollar!}
+                            status={bet.status!}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="card mb-4">
+                    <div className="card-header py-3 bg-light">
+                      <h5 className="mb-0">Order Summary</h5>
+                    </div>
+                    <div className="card-body">
+                      <ul className="list-group list-group-flush">
+                        <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                          Products ({bets.length})
+                          {/* <span>${Math.round(subtotal)}</span> */}
+                        </li>
+                        <li className="list-group-item d-flex justify-content-between align-items-center px-0">
+                          Shipping
+                          {/* <span>${shipping}</span> */}
+                        </li>
+                        <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                          <div>
+                            <strong>Total amount</strong>
+                          </div>
+                          <span>
+                            {/* <strong>${Math.round(subtotal + shipping)}</strong> */}
+                          </span>
+                        </li>
+                      </ul>
 
-                                    {/* <Link
+                      {/* <Link
                       to="/checkout"
                       className="btn btn-dark btn-lg btn-block"
                     >
                       Go to checkout
                     </Link> */}
-                                </div>
-                            </div>
-                        </div>
                     </div>
+                  </div>
                 </div>
-            </section>
+              </div>
+            </div>
+          </section>
         </>
         {/* {state.length > 0 ? <ShowCart /> : <EmptyCart />} */}
-          {/* <ShowCart /> */}
+        {/* <ShowCart /> */}
       </div>
       <Footer />
     </>
   );
-};
+}

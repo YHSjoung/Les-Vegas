@@ -15,14 +15,14 @@ export default async function Home() {
   const { userId } = auth();
   console.log(userId);
 
-  if(userId) {
+  if (userId) {
     await db
-    .insert(usersTable)
-    .values({
-      id: userId!,
-    })
-    .onConflictDoNothing()
-    .execute();
+      .insert(usersTable)
+      .values({
+        id: userId!,
+      })
+      .onConflictDoNothing()
+      .execute();
   }
 
   const dollar = await db
@@ -116,7 +116,7 @@ export default async function Home() {
   console.log(weatherContracts);
   return (
     <>
-      <Header userId={userId!} dollar={dollarNum}/>
+      <Header userId={userId!} dollar={dollarNum} />
       <Main />
       <Suspense fallback={<Loading />} />
       {weatherContracts.length === 0 ? (
