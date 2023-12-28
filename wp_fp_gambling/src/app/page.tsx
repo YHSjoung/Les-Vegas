@@ -44,6 +44,7 @@ export default async function Home() {
     .from(contractTable)
     .where(eq(contractTable.open, true))
     .leftJoin(betSubquery, eq(contractTable.id, betSubquery.contractId))
+    // .groupBy(contractTable.type)
     .execute();
   console.log(contracts);
   return (
