@@ -19,12 +19,13 @@ export default function Main() {
             alt="Card"
             height={500}
           />
-          <div className="card-img-overlay d-flex align-items-center">
-            <div className="container">
-              <p className="card-title fs-1 text-bold fw-lighter text-xl">
+          <div className="card-img-overlay d-flex align-items-center gap-100 bg-opacity-70 bg-gray-900">
+            <div className="py-100"/>
+            <div className="container ">
+              <p className="card-title fs-1 text-4xl">
                 Predict the Unpredictable
               </p>
-              <p className="card-text fs-5 d-none d-sm-block text-xl">
+              <p className="card-text fs-5 d-none d-sm-block text-xl fw-lighter">
                 Bet on the Future: Weather, Stocks, Games - Where Thrills Meet
                 Forecast !
               </p>

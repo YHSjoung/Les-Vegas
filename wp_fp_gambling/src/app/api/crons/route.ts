@@ -8,7 +8,7 @@ import {
   putContract,
   OptionType,
 } from "@/controler/contract";
-import { getBet, forWhat } from "@/controler/bet";
+import { getBet, forWhat, putBet } from "@/controler/bet";
 import { addDollar } from "@/controler/user";
 
 // 建立公司名稱、代碼字典
@@ -268,14 +268,19 @@ async function executeWeatherContract(formatedDateArray: Array<string>) {
   }
 
   // 計算天氣合約獲利
-  const profitReses = betArray.map((bet) => {
+  const profitReses = betArray.map(async (bet) => {
     const profit = Math.round(bet.dollar! * odds);
-    const putData = {
+    const putUserData = {
       userId: bet.userId!,
       dollar: profit,
     };
-    const addDollarRes = addDollar(putData);
-    return addDollarRes;
+    await addDollar(putUserData);
+    const putBetData = {
+      id: bet.id!,
+      status: true,
+      dollar: profit,
+    };
+    await putBet(putBetData);
   });
   console.log(profitReses);
 }
@@ -359,14 +364,19 @@ async function executeNBAContract(formatedDateArray: Array<string>) {
     }
 
     // 計算 NBA 合約獲利
-    const profitReses = betArray.map((bet) => {
+    const profitReses = betArray.map(async (bet) => {
       const profit = Math.round(bet.dollar! * odds);
-      const putData = {
+      const putUserData = {
         userId: bet.userId!,
         dollar: profit,
       };
-      const addDollarRes = addDollar(putData);
-      return addDollarRes;
+      await addDollar(putUserData);
+      const putBetData = {
+        id: bet.id!,
+        status: true,
+        dollar: profit,
+      };
+      await putBet(putBetData);
     });
     console.log(profitReses);
   });
@@ -455,14 +465,19 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
     }
 
     // 計算股價合約獲利
-    const profitReses = betArray.map((bet) => {
+    const profitReses = betArray.map(async (bet) => {
       const profit = Math.round(bet.dollar! * odds);
-      const putData = {
+      const putUserData = {
         userId: bet.userId!,
         dollar: profit,
       };
-      const addDollarRes = addDollar(putData);
-      return addDollarRes;
+      await addDollar(putUserData);
+      const putBetData = {
+        id: bet.id!,
+        status: true,
+        dollar: profit,
+      };
+      await putBet(putBetData);
     });
     console.log(profitReses);
   });
@@ -476,15 +491,6 @@ export async function GET() {
   const NBAContract = await postNBAContract(formatedDateArray);
   const marketingContract = await postMarketingContract(formatedDateArray);
   // await blockContract(formatedDateArray);
-  // const yaerMonth = formatedDateArray[0].split("-").slice(0, 2).join("");
-  // const response = await fetch(
-  //   `https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY?date=${yaerMonth}&stockNo=0050&response=json`,
-  // );
-  // const data = await response.json();
-  // const yesterdayData = data.data[data.data.length - 1];
-  // const initialPrice = yesterdayData[3];
-  // const change = yesterdayData[7];
-  // const changePercent = (change / initialPrice) * 100;
   const data = {
     weatherContract: weatherContract,
     NBAContract: NBAContract,
@@ -502,12 +508,22 @@ export async function GET() {
   }
 }
 
-export async function GET2() {
+export async function POST() {
+  console.log("POST");
+  const formatedDateArray = formateDate(DateArray);
+  const weatherContract = await postWeatherContract(formatedDateArray);
+  const NBAContract = await postNBAContract(formatedDateArray);
+  const marketingContract = await postMarketingContract(formatedDateArray);
+  await blockContract(formatedDateArray);
+  await executeWeatherContract(formatedDateArray);
+  await executeNBAContract(formatedDateArray);
+  await executeMarketingContract(formatedDateArray);
+  const data = {
+    weatherContract: weatherContract,
+    NBAContract: NBAContract,
+    marketingContract: marketingContract,
+  };
   try {
-    const response = await fetch(
-      "https://api-secure.sports.yahoo.com/v1/editorial/s/scoreboard?&region=TW&tz=Asia%2FTaipei&ysp_redesign=1&leagues=nba&date=2023-12-15",
-    );
-    const data = await response.json();
     return NextResponse.json({ data: data }, { status: 200 });
   } catch (error) {
     return NextResponse.json(

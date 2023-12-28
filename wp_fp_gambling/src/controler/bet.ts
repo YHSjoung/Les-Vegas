@@ -11,6 +11,14 @@ const PostBetSchema = z.object({
 });
 export type PostBetType = z.infer<typeof PostBetSchema>;
 
+const PutBetSchema = z.object({
+    id: z.number(),
+    option: z.enum(["optionA", "optionB", "optionC"]).optional(),
+    dollar: z.number().optional(),
+    status: z.boolean().optional(),
+    });
+export type PutBetType = z.infer<typeof PutBetSchema>;
+
 export enum forWhat {
   user = "user",
   contract = "contract",
@@ -46,6 +54,30 @@ export async function postBet(data: PostBetType) {
   } catch (error) {
     return "Insert bet failed";
   }
+}
+
+// 修改下注
+export async function putBet(data: PutBetType) {
+    try {
+        PutBetSchema.parse(data);
+    } catch (error) {
+        return "Put data does not match schema";
+    }
+    const { id, option, dollar, status } = data as PutBetType;
+    try {
+        const bet = await db
+            .update(betsTable)
+            .set({
+                option: option,
+                dollar: dollar,
+                status: status,
+            })
+            .where(eq(betsTable.id, id)) // Convert id to number using parseInt
+            .execute();
+        return bet;
+    } catch (error) {
+        return "Put bet failed";
+    }
 }
 
 // 取得所有下注

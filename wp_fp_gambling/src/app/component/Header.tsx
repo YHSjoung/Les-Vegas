@@ -5,6 +5,11 @@ import { UserButton } from "@clerk/nextjs";
 import Head from "next/head";
 
 const Header = ({ userId, dollar }: { userId: string, dollar: number|null }) => {
+  
+  const [dollarNum, setDollarNum] = useState<number|null>(dollar);
+  useEffect(() => {
+    setDollarNum(dollar);
+  }, [dollar]);
 
   return (
     <div className="header fixed z-10 w-full bg-gray-900 bg-opacity-95">

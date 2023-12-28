@@ -61,6 +61,7 @@ export const betsTable = pgTable(
     option: varchar("option").default(""),
     dollar: integer("dollar").default(0),
     createdAt: timestamp("createdAt").defaultNow(),
+    status: boolean("status").default(false),
   },
   (table) => ({
     idIndex: index("bet_id_index").on(table.id),
