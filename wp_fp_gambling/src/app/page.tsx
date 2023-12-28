@@ -52,8 +52,10 @@ export default async function Home() {
       <Header userId={userId!} />
       <Main />
       <Suspense fallback={<Loading />} />
-      { !contracts ? (
-        <p>Threre is not any contract</p>
+      {contracts.length === 0 ? (
+        <div className="flex justify-center">
+          <p className="text-4xl my-4 font-bold text-gray-400">Threre is not any contract</p>
+        </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 m-4">
           {contracts.map((contract) => {

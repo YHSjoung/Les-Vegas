@@ -476,20 +476,20 @@ export async function GET() {
   const NBAContract = await postNBAContract(formatedDateArray);
   const marketingContract = await postMarketingContract(formatedDateArray);
   // await blockContract(formatedDateArray);
-  const yaerMonth = formatedDateArray[0].split("-").slice(0, 2).join("");
-  const response = await fetch(
-    `https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY?date=${yaerMonth}&stockNo=0050&response=json`,
-  );
-  const data = await response.json();
-  const yesterdayData = data.data[data.data.length - 1];
-  const initialPrice = yesterdayData[3];
-  const change = yesterdayData[7];
-  const changePercent = (change / initialPrice) * 100;
-  // const data = {
-  //   // weatherContract: weatherContract,
-  //   // NBAContract: NBAContract,
-  //   // marketingContract: marketingContract,
-  // };
+  // const yaerMonth = formatedDateArray[0].split("-").slice(0, 2).join("");
+  // const response = await fetch(
+  //   `https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY?date=${yaerMonth}&stockNo=0050&response=json`,
+  // );
+  // const data = await response.json();
+  // const yesterdayData = data.data[data.data.length - 1];
+  // const initialPrice = yesterdayData[3];
+  // const change = yesterdayData[7];
+  // const changePercent = (change / initialPrice) * 100;
+  const data = {
+    weatherContract: weatherContract,
+    NBAContract: NBAContract,
+    marketingContract: marketingContract,
+  };
   try {
     return NextResponse.json({ data: data }, { status: 200 });
   } catch (error) {
