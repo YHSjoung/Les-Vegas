@@ -9,11 +9,36 @@ import Loading from "./loading";
 import { db } from "@/db";
 import { eq, and } from "drizzle-orm";
 import Link from "next/link";
-import { betsTable, contractTable } from "@/db/schema";
+import { betsTable, contractTable, usersTable } from "@/db/schema";
 
 export default async function Home() {
   const { userId } = auth();
   console.log(userId);
+
+  if(userId) {
+    await db
+    .insert(usersTable)
+    .values({
+      id: userId!,
+    })
+    .onConflictDoNothing()
+    .execute();
+  }
+
+  const dollar = await db
+    .select({
+      dollar: usersTable.dollar,
+    })
+    .from(usersTable)
+    .where(eq(usersTable.id, userId!))
+    .execute();
+
+  let dollarNum;
+  if (dollar.length === 0) {
+    dollarNum = null;
+  } else {
+    dollarNum = dollar[0].dollar;
+  }
 
   const betSubquery = db.$with("attend_or_not").as(
     db
@@ -91,7 +116,7 @@ export default async function Home() {
   console.log(weatherContracts);
   return (
     <>
-      <Header userId={userId!} />
+      <Header userId={userId!} dollar={dollarNum}/>
       <Main />
       <Suspense fallback={<Loading />} />
       {weatherContracts.length === 0 ? (
