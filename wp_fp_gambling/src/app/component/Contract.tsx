@@ -40,6 +40,7 @@ export default function Contract({
 
   return (
     <>
+      <Link href={`/contract/${contractId}`}>
       <div id={contractId} key={contractId} className="flex flex-col gap-4">
         <div className="card text-center h-100" key={contractId}>
           {/* <img
@@ -50,6 +51,7 @@ export default function Contract({
                 /> */}
           <div className="card-body">
             <p className="text-2xl bold mb-2 font-bold">{title}</p>
+       
             <p className="card-text">{description}</p>
           </div>
           <hr className="border-t border-gray-600 my-1" />
@@ -79,6 +81,7 @@ export default function Contract({
                 </div> */}
         </div>
       </div>
+      </Link>
     </>
   );
 }
