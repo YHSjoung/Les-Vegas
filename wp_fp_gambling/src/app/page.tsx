@@ -52,26 +52,31 @@ export default async function Home() {
       <Header userId={userId!} />
       <Main />
       <Suspense fallback={<Loading />} />
-      <div className="grid grid-cols-2 gap-4 m-4">
-        {contracts.map((contract) => {
-          console.log(contract);
-          return (
-            <Contract
-              contractId={contract.contractId}
-              title={contract.title}
-              description={contract.description}
-              totalDollar={contract.totalDollar!}
-              optionA={contract.optionA!}
-              optionB={contract.optionB!}
-              optionC={contract.optionC!}
-              attendees={contract.attendees!}
-              blockDate={contract.blockDate!}
-              option={contract.option}
-              dollar={contract.dollar}
-            />
-          );
-        })}
-      </div>
+      { !contracts ? (
+        <p>Threre is not any contract</p>
+      ) : (
+        <div className="grid grid-cols-2 gap-4 m-4">
+          {contracts.map((contract) => {
+            console.log(contract);
+            return (
+              <Contract
+                contractId={contract.contractId}
+                title={contract.title}
+                description={contract.description}
+                totalDollar={contract.totalDollar!}
+                optionA={contract.optionA!}
+                optionB={contract.optionB!}
+                optionC={contract.optionC!}
+                attendees={contract.attendees!}
+                blockDate={contract.blockDate!}
+                option={contract.option}
+                dollar={contract.dollar}
+              />
+            );
+          })}
+        </div>
+      )}
+      
       <Footer />
 
       <TestAPI

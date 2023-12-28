@@ -472,9 +472,9 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
 export async function GET() {
   console.log("GET");
   const formatedDateArray = formateDate(DateArray);
-  // const weatherContract = await postWeatherContract(formatedDateArray);
-  // const NBAContract = await postNBAContract(formatedDateArray);
-  // const marketingContract = await postMarketingContract(formatedDateArray);
+  const weatherContract = await postWeatherContract(formatedDateArray);
+  const NBAContract = await postNBAContract(formatedDateArray);
+  const marketingContract = await postMarketingContract(formatedDateArray);
   // await blockContract(formatedDateArray);
   const yaerMonth = formatedDateArray[0].split("-").slice(0, 2).join("");
   const response = await fetch(
