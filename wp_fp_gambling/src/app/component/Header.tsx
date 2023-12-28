@@ -1,10 +1,13 @@
+"use client";
+import React, { useEffect, useState } from 'react';
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import Head from "next/head";
 
-const Header = ({ userId }: { userId: string }) => {
+const Header = ({ userId, dollar }: { userId: string, dollar: number|null }) => {
+
   return (
-    <>
+    <div className="header fixed z-10 w-full bg-gray-900 bg-opacity-95">
       <Head>
         <link
           rel="stylesheet"
@@ -14,25 +17,27 @@ const Header = ({ userId }: { userId: string }) => {
         />
       </Head>
       <nav className="py-4 px-4 flex items-center justify-between">
-        <div className="container">
-          <Link href="/">Las Vagas</Link>
-
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav m-auto my-2 text-center">
-              <li className="nav-item">
-                <Link href="/" className="text-red-500">
-                  Home
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/product">Products</Link>
-              </li>
-              <li className="nav-item"></li>
-            </ul>
+        <div className="flex items-center justify-between gap-4 w-full mr-4">
+          <Link href="/" className="text-4xl">Las Vagas</Link>
+          <div className="links flex gap-4">
+              <Link href="/" className="text-gray-500 text-xl">
+                Home
+              </Link>
+              <Link href="/product" className="text-gray-500 text-xl">
+                Products
+              </Link>
           </div>
+          {userId && (
+            <div>
+              <p className="text-white text-xl font-bold">
+                $ {dollar}
+              </p>
+            </div>
+          )}
           <div className="buttons text-center">
             <Link href="/cart" className="border p-2 rounded-lg text-xl">
-              <i className="fa fa-cart-shopping m-1"></i> Cart
+              <i className="fa fa-cart-shopping m-1"/>
+              Cart
             </Link>
           </div>
         </div>
@@ -43,7 +48,7 @@ const Header = ({ userId }: { userId: string }) => {
         )}
         <UserButton afterSignOutUrl="/" />
       </nav>
-    </>
+    </div>
   );
 };
 
