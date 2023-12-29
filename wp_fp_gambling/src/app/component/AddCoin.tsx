@@ -7,12 +7,13 @@ type AddCoinTypes = {
 };
 const updateDollar = async (id: string, dollar: number) => {
     try {
+        alert({ userId: id, dollar })
         const response = await fetch("/api/user", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ id, dollar: updateDollar }),
+            body: JSON.stringify({ userId: id, dollar }),
         });
 
         if (!response.ok) {
