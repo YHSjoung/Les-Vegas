@@ -5,8 +5,7 @@ import { betsTable, contractTable, usersTable } from "@/db/schema";
 import { auth } from "@clerk/nextjs";
 
 export default async function getContractsByType(req: NextApiRequest, res: NextApiResponse) {
-  const { userId } = auth(req);
-
+  const { userId } = auth();
   try {
     if (userId) {
       await db
