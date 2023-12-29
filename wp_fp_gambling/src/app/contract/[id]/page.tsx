@@ -1,33 +1,31 @@
 "use client";
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import ContractDetailServer from './api/useContract';
+import getContractsByType from './api/similarContract';
 import Link from 'next/link';
 import Header from '../../component/Header';
 import Marquee from "react-fast-marquee";
 import bet from './api/bet';
-import { ContractContext } from './api/useContract';
+import Image from 'next/image';
 
 
 
-function Contract () {
-  const { contract, contracts, setContractId } = useContext(ContractContext);
+const Contract: React.FC<ContractProps> = ({ data }) => {
   const params = useParams();
-  const paramsContractId = params.id as string;
-  // const [contract, setContract] = useState(null);
+  const contractId = params;
+  const contract = ContractDetailServer(contractId);
   //  const SimilarContracts = getContractsByType();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [betAmount, setBetAmount] = useState<number>(0);
+  const [SimilarContract, setSimilarContract] = useState([]);
 
-  const [loading, setLoading] = useState(false);
-  const [loading2, setLoading2] = useState(false);
 
   useEffect(() => {
-    setContractId(paramsContractId);
-  },[]);
-
-  // useEffect(() => {
-  //   setSelectedOption(null); 
-  // }, [paramsContractId]);
+    console.log("hello", contract);
+    setSelectedOption(null); 
+    //setSimilarContract(SimilarContracts);
+  }, [contractId]);
 
   const handleSaveAnswer = (selectedOption: string) => {
     setSelectedOption(selectedOption);
@@ -50,9 +48,9 @@ function Contract () {
       <>
         <div className="py-4 my-4">
           <div className="d-flex">
-            {SimilarContract.map((item) => {
+            {SimilarContract.map((contract) => {
               return (
-                <div key={item.id} className="card mx-4 text-center">
+                <div key={contract.id} className="card mx-4 text-center">
                   {/* <img
                     className="card-img-top p-3"
                     src={item.image}
@@ -60,11 +58,11 @@ function Contract () {
                     height={300}
                     width={300}
                   /> */}
-                  <Link href={"/contract/" + item.id} className="btn btn-dark m-1">
+                  <Link href={"/contract/" + contract.id} className="btn btn-dark m-1">
 
                   <div className="card-body">
                     <h5 className="card-title">
-                      {item.title.substring(0, 15)}...
+                      {contract.title.substring(0, 15)}...
                     </h5>
                   </div>
                   
@@ -85,12 +83,14 @@ function Contract () {
           <div className="container my-5 py-2">
             <div className="row">
               <div className="col-md-6 col-sm-12 py-3">
-              <img
-                  className="card-img img-fluid"
-                  src="../../../../assets/IMG_1.PNG"
-                  alt="Card"
-                  height={500}
+              <Image
+                src="/assets/IMG_1.PNG"
+                alt="Card"
+                width={500}
+                height={500}
+                layout="responsive"
                 />
+
               </div>
               <div className="col-md-6 col-md-6 py-5">
               <h1 className="display-5" style={{ fontSize: '1.9rem' }}>{contract.title}</h1>
