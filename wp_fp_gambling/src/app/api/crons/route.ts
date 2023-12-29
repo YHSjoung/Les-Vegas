@@ -93,7 +93,7 @@ async function postWeatherContract(formatedDateArray: Array<string>) {
   // 建立合約
   const postData = {
     id: `w.${formatedDateArray[2]}.${forcastDegree}`, // ex: w.2021-09-30.12
-    type: ContractType.Weather,
+    type: ContractType.weather,
     title: `台北市大安區 ${formatedDateArray[2]} 中午 12 點氣溫`,
     description: "你覺得明天的氣溫會是多少呢？",
     optionA: `${forcastDegree}度以下`,
@@ -125,7 +125,7 @@ async function postNBAContract(formatedDateArray: Array<string>) {
   const postNBAReses = gamesArray.map(async (game: any) => {
     const postData = {
       id: game.gameid, // ex: nba.g.20231222318
-      type: ContractType.Sport,
+      type: ContractType.sport,
       title: `${formatedDateArray[2]} ${
         NBATeamNameDictionay[game.home_team_id]
       } VS ${NBATeamNameDictionay[game.away_team_id]}`,
@@ -153,7 +153,7 @@ async function postMarketingContract(formatedDateArray: Array<string>) {
     const companyCode = company.split("(")[1].split(")")[0];
     const postData = {
       id: `m.${formatedDateArray[2]}.${companyCode}`, // ex: m.2021-09-30.2330
-      type: ContractType.Marketing,
+      type: ContractType.marketing,
       title: `${formatedDateArray[2]} ${company} 股價漲跌`,
       description: `你覺得明天 ${company} 股價漲跌多少 %?`,
       optionA: `-1.5% 以下`,

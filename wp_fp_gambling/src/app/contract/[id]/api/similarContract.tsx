@@ -4,7 +4,7 @@ import { eq, and } from "drizzle-orm";
 import { betsTable, contractTable, usersTable } from "@/db/schema";
 import { auth } from "@clerk/nextjs";
 
-export default async function getContractsByType(req: NextApiRequest, res: NextApiResponse) {
+export default async function getContractsByType() {
   const { userId } = auth();
   try {
     if (userId) {
@@ -47,10 +47,8 @@ export default async function getContractsByType(req: NextApiRequest, res: NextA
       .where(and(eq(contractTable.open, true), eq(contractTable.type, 'weather'))) 
       .leftJoin(betSubquery, eq(contractTable.id, betSubquery.contractId))
       .execute();
-
-    res.status(200).json(contracts);
+    console.log(contracts);
   } catch (error) {
     console.error('Error fetching contracts by type:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
   }
 }
