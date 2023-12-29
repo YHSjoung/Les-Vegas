@@ -29,7 +29,7 @@ const Header = ({
       <nav className="py-4 px-4 flex items-center justify-between">
         <div className="flex items-center justify-between gap-4 w-full mr-4">
           <Link href="/" className="text-4xl">
-            Las Vagas
+            Las Vegas
           </Link>
           <div className="links flex gap-4">
             <Link href="/" className="text-gray-500 text-xl">
@@ -37,6 +37,9 @@ const Header = ({
             </Link>
             <Link href="/product" className="text-gray-500 text-xl">
               Products
+            </Link>
+            <Link href="/about" className="text-gray-500 text-xl">
+              Add Coins
             </Link>
           </div>
           {userId && (
