@@ -4,9 +4,9 @@ import { contractTable } from "@/db/schema";
 import z from "zod";
 
 export enum ContractType {
-  Sport = "sport",
-  Weather = "weather",
-  Marketing = "marketing",
+  sport = "sport",
+  weather = "weather",
+  marketing = "marketing",
 }
 
 const PostContractsSchema = z.object({

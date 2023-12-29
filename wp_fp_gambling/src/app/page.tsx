@@ -1,6 +1,6 @@
 import Header from "./component/Header";
 import TestAPI from "@/component/TestAPI";
-import { auth, UserButton } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs";
 import { Footer } from "./component";
 import Main from "./component/Main";
 import Contract from "./component/Contract";
@@ -200,7 +200,7 @@ export default async function Home() {
       ) : (
         <>
           <div className="flex justify-begin ml-10">
-            <p className="text-8xl mt-4 font-bold text-green-400">NBA</p>
+            <p className="text-8xl mt-4 font-bold text-green-400">Sport</p>
           </div>
           <hr className="border-t border-4 text-green-400 mt-2 mx-4 rounded-md" />
           <hr className="border-t border-4 text-green-400 mx-4" />
