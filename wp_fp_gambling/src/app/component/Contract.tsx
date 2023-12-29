@@ -1,5 +1,4 @@
 import Link from "next/link";
-
 type ContractProps = {
   contractId: string;
   title: string;
@@ -37,6 +36,7 @@ export default function Contract({
       option = optionC;
     }
   }
+  
 
   return (
     <>

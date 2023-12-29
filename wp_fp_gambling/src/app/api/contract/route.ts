@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
   const type = request.nextUrl.searchParams.get("type") as ContractType;
   try {
     if (contractId === null) {
+      console.log(type);
       const contracts = await db
       .select({
         id: contractTable.id,
@@ -33,9 +34,11 @@ export async function GET(request: NextRequest) {
       .from(contractTable)
       .where(and(
         eq(contractTable.open, true),
-        eq(contractTable.type, type!)
+        eq(contractTable.type, type)
         ))
       .execute();
+      console.log(contracts);
+      return NextResponse.json({ data: contracts }, { status: 200 });
     } else {
       const contract = await db
       .select({

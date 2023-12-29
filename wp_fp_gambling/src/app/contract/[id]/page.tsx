@@ -1,75 +1,96 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'next/navigation';
-import ContractDetailServer from './api/useContract';
-import getContractsByType from './api/similarContract';
 import Link from 'next/link';
 import Header from '../../component/Header';
 import Marquee from "react-fast-marquee";
 import bet from './api/bet';
 import Image from 'next/image';
-
-
-
-const Contract: React.FC<ContractProps> = ({ data }) => {
+import { useUser } from "@clerk/nextjs";
+import { number, set } from 'zod';
+import { ContractContext } from './api/useContract';
+function Contract () {
+  const { user } = useUser();
+  const { contract, contracts, setContractId, setContractType, dollar, setUserId } = useContext(ContractContext);
   const params = useParams();
-  const contractId = params;
-  const contract = ContractDetailServer(contractId);
-  //  const SimilarContracts = getContractsByType();
+  const paramsContractId = params.id as string;
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [betAmount, setBetAmount] = useState<number>(0);
-  const [SimilarContract, setSimilarContract] = useState([]);
+  const [betAmount, setBetAmount] = useState<number | "">(0);
 
 
   useEffect(() => {
-    console.log("hello", contract);
-    setSelectedOption(null); 
-    //setSimilarContract(SimilarContracts);
-  }, [contractId]);
+    setContractId(paramsContractId);
+    let type
+    if (paramsContractId.split(".")[0] === "w") {
+      type = "weather"
+    } else if (paramsContractId.split(".")[0] === "nba") {
+      type = "sport"
+    } else if (paramsContractId.split(".")[0] === "m") {
+      type = "marketing"
+    }
+    console.log(type)
+    setContractType(type!);
+    if (user) {
+      setUserId(user.id);
+      console.log(user.id);
+    }
+  },[paramsContractId, user]);
+
 
   const handleSaveAnswer = (selectedOption: string) => {
     setSelectedOption(selectedOption);
-
   };
 
   const handlePlaceBet = () => {
+    if (typeof betAmount !== "number") {
+      setBetAmount(0);
+      alert("下注金額不能為空");
+      return;
+    }
+    if (betAmount > dollar!) {
+      setBetAmount(dollar!);
+      alert("下注金額不能大於您的餘額");
+      return;
+    }
     if (selectedOption) {
       if (betAmount >= 0) {
-        bet(contract.id, selectedOption, betAmount);
-      } else {
-        console.warn('請輸入有效的下注金額');
+        bet(contract!.id, selectedOption, betAmount);
       }
-    } else {
-      console.warn('請選擇一個選項');
-    }
-  };
+    };
+  }
   const ShowSimilarContract = () => {
     return (
       <>
-        <div className="py-4 my-4">
+        <div className="py-2">
           <div className="d-flex">
-            {SimilarContract.map((contract) => {
-              return (
-                <div key={contract.id} className="card mx-4 text-center">
-                  {/* <img
-                    className="card-img-top p-3"
-                    src={item.image}
-                    alt="Card"
-                    height={300}
-                    width={300}
-                  /> */}
-                  <Link href={"/contract/" + contract.id} className="btn btn-dark m-1">
-
-                  <div className="card-body">
-                    <h5 className="card-title">
-                      {contract.title.substring(0, 15)}...
-                    </h5>
+            {contracts ? (
+              <>
+              {contracts.map((contract) => {
+                return (
+                  <div key={contract.id} className="card mx-4 text-center">
+                    {/* <img
+                      className="card-img-top p-3"
+                      src={item.image}
+                      alt="Card"
+                      height={300}
+                      width={300}
+                    /> */}
+                    <Link href={"/contract/" + contract.id} className="btn btn-dark m-1">
+  
+                    <div className="card-body">
+                      <h5 className="card-title">
+                        {contract.title.substring(0, 15)}...
+                      </h5>
+                    </div>
+                    
+                      </Link>
                   </div>
-                  
-                    </Link>
-                </div>
-              );
-            })}
+                );
+              })}
+              </>
+              ) : (
+                <p>正在加載數據...</p>
+              )}
           </div>
         </div>
       </>
@@ -78,9 +99,17 @@ const Contract: React.FC<ContractProps> = ({ data }) => {
 
   return (
     <>
+      {user ? (
+        <>
+          <Header userId={user.id} dollar={dollar} />
+        </>
+      ) : (
+          <p>正在加載數據...</p>
+      )}
       {contract && (
         <>
-          <div className="container my-5 py-2">
+          <div className="p-8" />
+          <div className="container">
             <div className="row">
               <div className="col-md-6 col-sm-12 py-3">
               <Image
@@ -90,14 +119,12 @@ const Contract: React.FC<ContractProps> = ({ data }) => {
                 height={500}
                 layout="responsive"
                 />
-
               </div>
-              <div className="col-md-6 col-md-6 py-5">
+              <div className="col-md-6 col-md-6 py-4">
               <h1 className="display-5" style={{ fontSize: '1.9rem' }}>{contract.title}</h1>
                 <p className="lead"></p>
                 <h3 className="display-6 my-4">${contract.totalDollar}</h3>
                 <p className="lead">{contract.description}</p>
-
                 <div className="my-3">
                   <div className="row">
                     <div className="col-md-4">
@@ -134,7 +161,10 @@ const Contract: React.FC<ContractProps> = ({ data }) => {
                     type="number"
                     id="betAmount"
                     value={betAmount}
-                    onChange={(e) => setBetAmount(Math.max(0, Number(e.target.value)))}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setBetAmount(value === '' ? '' : Math.max(0, Number(value)));
+                    }}
                     className="form-control"
                   />
                 </div>
@@ -149,11 +179,11 @@ const Contract: React.FC<ContractProps> = ({ data }) => {
             </div>
           </div>
           <div className="container">
-        <div className="row my-5 py-5">
+        <div className="row">
           <div className="d-none d-md-block">
             <h2 className="">You may also Like</h2>
             <Marquee pauseOnHover={true} pauseOnClick={true} speed={50}>
-                {/* <ShowSimilarContract /> */}
+                <ShowSimilarContract />
             </Marquee>
           </div>
         </div>
@@ -167,7 +197,4 @@ const Contract: React.FC<ContractProps> = ({ data }) => {
  
 };
 
-
-
 export default Contract;
-
