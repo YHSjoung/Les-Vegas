@@ -1,31 +1,33 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'next/navigation';
-import ContractDetailServer from './api/useContract';
-import getContractsByType from './api/similarContract';
 import Link from 'next/link';
 import Header from '../../component/Header';
 import Marquee from "react-fast-marquee";
 import bet from './api/bet';
+import { ContractContext } from './api/useContract';
 
 
 
-const Contract: React.FC<ContractProps> = ({ data }) => {
+function Contract () {
+  const { contract, contracts, setContractId } = useContext(ContractContext);
   const params = useParams();
-  const contractId = params;
-  const contract = ContractDetailServer(contractId);
+  const paramsContractId = params.id as string;
+  // const [contract, setContract] = useState(null);
   //  const SimilarContracts = getContractsByType();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [betAmount, setBetAmount] = useState<number>(0);
-  const [SimilarContract, setSimilarContract] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
 
   useEffect(() => {
-    console.log("hello", contract);
-    setSelectedOption(null); 
-    //setSimilarContract(SimilarContracts);
-  }, [contractId]);
+    setContractId(paramsContractId);
+  },[]);
+
+  // useEffect(() => {
+  //   setSelectedOption(null); 
+  // }, [paramsContractId]);
 
   const handleSaveAnswer = (selectedOption: string) => {
     setSelectedOption(selectedOption);
