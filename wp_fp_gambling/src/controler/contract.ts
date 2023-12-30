@@ -32,10 +32,8 @@ const PutConractSchema = z.object({
   type: z.string().optional(),
   open: z.boolean().optional(),
   outcome: z.enum(["optionA", "optionB", "optionC"]).optional(),
-  totalDollar: z.number().optional(),
-  optionADollar: z.number().optional(),
-  optionBDollar: z.number().optional(),
-  optionCDollar: z.number().optional(),
+  dollar: z.number().optional(),
+  option: z.enum(["optionA", "optionB", "optionC"]).optional(),
 });
 type PutConractType = z.infer<typeof PutConractSchema>;
 
@@ -90,28 +88,113 @@ export async function putContract(data: PutConractType) {
     id,
     open,
     outcome,
-    totalDollar,
-    optionADollar,
-    optionBDollar,
-    optionCDollar,
+    dollar,
+    option,
   } = data as PutConractType;
   console.log(data);
+
   try {
+    if(option) {
+      if (option === "optionA") {
+        const contract = await db
+        .select({
+          optionADollar: contractTable.optionADollar,
+          totalDollar: contractTable.totalDollar,
+          attendees: contractTable.attendees,
+        })
+        .from(contractTable)
+        .where(eq(contractTable.id, id))
+        .execute();
+        console.log(contract);
+        let optionADollar = contract[0].optionADollar;
+        optionADollar! += dollar!;
+        const updateContract = await db
+          .update(contractTable)
+          .set({
+            totalDollar: contract[0].totalDollar! + dollar!,
+            optionADollar: optionADollar,
+            attendees: contract[0].attendees! + 1,
+          })
+          .where(eq(contractTable.id, id))
+          .returning()
+          .execute();
+        console.log(updateContract);
+        return updateContract;
+      } else if (option === "optionB") {
+        const contract = await db
+        .select({
+          totalDollar: contractTable.totalDollar,
+          optionBDollar: contractTable.optionBDollar,
+          attendees: contractTable.attendees,
+        })
+        .from(contractTable)
+        .where(eq(contractTable.id, id))
+        .execute();
+        console.log(contract);
+        let optionBDollar = contract[0].optionBDollar;
+        optionBDollar! += dollar!;
+        const updateContract = await db
+          .update(contractTable)
+          .set({
+            totalDollar: contract[0].totalDollar! + dollar!,
+            optionBDollar: optionBDollar,
+            attendees: contract[0].attendees! + 1,
+          })
+          .where(eq(contractTable.id, id))
+          .returning()
+          .execute();
+        console.log(updateContract);
+        return updateContract;
+      } else if (option === "optionC") {
+        const contract = await db
+        .select({
+          optionCDollar: contractTable.optionCDollar,
+          totalDollar: contractTable.totalDollar,
+          attendees: contractTable.attendees,
+        })
+        .from(contractTable)
+        .where(eq(contractTable.id, id))
+        .execute();
+        console.log(contract);
+        let optionCDollar = contract[0].optionCDollar;
+        optionCDollar! += dollar!;
+        const updateContract = await db
+          .update(contractTable)
+          .set({
+            totalDollar: contract[0].totalDollar! + dollar!,
+            optionCDollar: optionCDollar,
+            attendees: contract[0].attendees! + 1,
+          })
+          .where(eq(contractTable.id, id))
+          .returning()
+          .execute();
+        console.log(updateContract);
+        return updateContract;
+      }
+    } else {
+    const contract = await db
+      .select({
+        totalDollar: contractTable.totalDollar,
+        optionADollar: contractTable.optionADollar,
+        optionBDollar: contractTable.optionBDollar,
+        optionCDollar: contractTable.optionCDollar,
+      })
+      .from(contractTable)
+      .where(eq(contractTable.id, id))
+      .execute();
+    console.log(contract);
     const updateContract = await db
       .update(contractTable)
       .set({
         open: open,
         outcome: outcome,
-        totalDollar: totalDollar,
-        optionADollar: optionADollar,
-        optionBDollar: optionBDollar,
-        optionCDollar: optionCDollar,
       })
       .where(eq(contractTable.id, id))
       .returning()
       .execute();
     console.log(updateContract);
     return updateContract;
+    }
   } catch (error) {
     return "Put contract failed";
   }

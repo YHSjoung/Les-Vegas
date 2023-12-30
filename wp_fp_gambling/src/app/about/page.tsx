@@ -28,7 +28,7 @@ export default async function AboutPage() {
 
   return (
     <>
-      <Header userId={userId!} dollar={dollarNum} />
+      <Header userId={userId!} dollarnum={dollarNum} />
       <AddCoin id={userId!} dollar={dollarNum || 0} />
       <br />
       <br />

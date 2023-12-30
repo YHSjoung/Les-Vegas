@@ -1,4 +1,3 @@
-import { relations } from "drizzle-orm";
 import {
   index,
   pgTable,
@@ -8,7 +7,6 @@ import {
   pgEnum,
   timestamp,
   boolean,
-  date,
 } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable(
