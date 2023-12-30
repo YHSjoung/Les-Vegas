@@ -232,12 +232,7 @@ export default async function Home() {
       )}
 
       <Footer />
-      {/* <TestAPI
-        userId={userId!}
-        contractId="m.2023-12-27.2330"
-        option="optionA"
-        dollar={100}
-      /> */}
+      <TestAPI />
     </>
   );
 }
