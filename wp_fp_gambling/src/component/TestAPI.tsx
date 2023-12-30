@@ -4,14 +4,14 @@ import type { PostBetType } from "@/controler/bet";
 const TestAPI = ({ userId, contractId, option, dollar }: PostBetType) => {
   const handleClick = async () => {
     const response = await fetch("/api/crons", {
-      method: "GET",
+      method: "POST",
       // headers: {
       //   "Content-Type": "application/json",
       // },
       // body: JSON.stringify({ userId, contractId, option, dollar }),
     });
-    const data = await response.json();
-    console.log(data);
+    // const data = await response.json();
+    // console.log(data);
   };
   return <button onClick={handleClick}>Click</button>;
 };

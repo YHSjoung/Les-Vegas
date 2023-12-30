@@ -3,9 +3,8 @@ import { Footer } from "../component";
 import Header from "../component/Header";
 import AddCoin from "../component/AddCoin";
 import { db } from "@/db";
-import { desc, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { usersTable } from "@/db/schema";
-// import EmptyCart from "./cart_client";
 import { auth, UserButton } from "@clerk/nextjs";
 export default async function AboutPage() {
   const { userId } = auth();
