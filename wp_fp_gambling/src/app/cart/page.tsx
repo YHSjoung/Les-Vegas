@@ -65,7 +65,7 @@ export default async function Cart() {
   return (
     <>
       {/* <Navbar /> */}
-      <Header userId={userId!} dollar={dollarNum} />
+      <Header userId={userId!} dollarnum={dollarNum}/>
       <div className="p-11" />
       <div className="container my-3 py-3">
         <p className="text-center font-bold text-4xl z-5 mb-2">Cart</p>
@@ -122,12 +122,12 @@ export default async function Cart() {
                           <span>{bets.length}</span>
                         </li>
                         <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
-                          <div>
+                          {/* <div>
                             <strong>Total amount</strong>
                           </div>
                           <span>
                             <strong>${Math.round(4.5)}</strong>
-                          </span>
+                          </span> */}
                         </li>
                       </ul>
                     </div>

@@ -116,7 +116,7 @@ export default async function Home() {
   console.log(weatherContracts);
   return (
     <>
-      <Header userId={userId!} dollar={dollarNum} />
+      <Header userId={userId!} dollarnum={dollarNum} />
       <Main />
       <Suspense fallback={<Loading />} />
       {weatherContracts.length === 0 ? (

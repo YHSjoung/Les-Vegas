@@ -41,6 +41,7 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   const data = await request.json();
+  console.log(data);
   try {
     const afterAddDollar = await addDollar(data);
     console.log(afterAddDollar);

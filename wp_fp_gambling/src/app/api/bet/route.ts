@@ -3,9 +3,14 @@ import type { NextRequest } from "next/server";
 import { postBet, getBet } from "@/controler/bet";
 
 export async function GET(request: NextRequest) {
-  const data = await request.json();
+  const userId = request.nextUrl.searchParams.get("userId");
+  const forWhat = request.nextUrl.searchParams.get("forWhat");
+  const putGetBet = {
+    userId: userId ?? undefined,
+    forWhat: forWhat as "user" | "contract", // Ensure forWhat is of type "user" or "contract"
+  };
   try {
-    const Bets = await getBet(data);
+    const Bets = await getBet(putGetBet);
     console.log(Bets);
     return NextResponse.json({ data: Bets }, { status: 200 });
   } catch (error) {
