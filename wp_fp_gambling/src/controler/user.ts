@@ -66,6 +66,8 @@ export async function addDollar(data: AddDollarType) {
       .execute();
     return updatedUser;
   } catch (error) {
+    console.log(error);
+    throw error;
     return "Add dollar failed";
   }
 }

@@ -7,7 +7,7 @@ type AddCoinTypes = {
 };
 const updateDollar = async (id: string, dollar: number) => {
     try {
-        alert({ userId: id, dollar })
+        // alert({ userId: id, dollar })
         const response = await fetch("/api/user", {
             method: 'PUT',
             headers: {
@@ -28,11 +28,11 @@ const updateDollar = async (id: string, dollar: number) => {
 };
 export default function AboutPage({ id, dollar: initialDollar }: AddCoinTypes) {
     const [dollar, setDollar] = useState(initialDollar);
-    const [watchTime, setWatchTime] = useState(0);
+    const [watchTime, setWatchTime] = useState(30);
     const getRandomWatchTime = () => {
         // 取得觀看時間，這裡設定為 10 到 40 秒之間
-        return Math.floor(Math.random() * (4 - 1 + 1)) + 1;
-        // return Math.floor(Math.random() * (40 - 10 + 1)) + 10;
+        // return Math.floor(Math.random() * (4 - 1 + 1)) + 10;
+        return Math.floor(Math.random() * (40 - 10 + 1)) + 10;
     };
     const getRandomVideoId = () => {
         // 在這裡實現取得隨機影片 ID 的邏輯，從影片集合中選擇一個影片 ID
@@ -46,19 +46,24 @@ export default function AboutPage({ id, dollar: initialDollar }: AddCoinTypes) {
             if (watchTime > 0) {
                 setWatchTime((prevWatchTime) => prevWatchTime - 1);
             } else {
+                clearInterval(timer);
                 // 觀看時間結束，增加點數
+
                 setDollar((currentDollar) => {
-                    const updatedDollar = currentDollar + 100;
-                    updateDollar(id, updatedDollar);
-                    return updatedDollar;
+                    const updatedDollar = currentDollar;
+                    updateDollar(id, 3);
+                    // return updatedDollar;
+                    return 1;
                 });
                 // 取得新的觀看時間和影片 ID
                 setWatchTime(getRandomWatchTime());
+                //跳轉到首頁
+                window.location.href = "/";
             }
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [watchTime]);
+    }, [id, dollar, watchTime]);
 
     const handleVideoClick = () => {
         // 在這裡處理影片點擊的邏輯，可能是打開一個新的窗口或導向到影片頁面
@@ -83,7 +88,7 @@ export default function AboutPage({ id, dollar: initialDollar }: AddCoinTypes) {
                 <hr />
                 <br />
                 <p className="lead text-center">
-                    沒錢了嗎? 沒關係! 這裡有一個影片，看完就可以得到 100 點!
+                    沒錢了嗎 ? 沒關係 ! 這裡有一個影片，看完就可以得到點數 !
                 </p>
                 <br />
 
