@@ -22,7 +22,7 @@ export default function Main() {
               </p>
               <p className={`card-text fs-5 d-none d-sm-block text-xl fw-lighter ${styles.colorFlash}`}>
                 Bet on the Future: Weather, Stocks, Games - Where Thrills Meet
-                Forecast!
+                Forecast !
               </p>
             </div>
           </div>
