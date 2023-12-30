@@ -1,11 +1,12 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-
+import React, { useState, useEffect, useContext } from 'react';
+import { ContractContext } from '../contract/[id]/api/useContract';
 type AddCoinTypes = {
     id: string;
     dollar: number;
 };
-const updateDollar = async (id: string, dollar: number) => {
+const updateDollar = async (id: string, dollars: number) => {
+    const { dollar, setDollar } = useContext(ContractContext);
     try {
         // alert({ userId: id, dollar })
         const response = await fetch("/api/user", {
@@ -13,7 +14,7 @@ const updateDollar = async (id: string, dollar: number) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ userId: id, dollar }),
+            body: JSON.stringify({ userId: id, dollars }),
         });
 
         if (!response.ok) {
@@ -22,6 +23,11 @@ const updateDollar = async (id: string, dollar: number) => {
 
         const data = await response.json();
         console.log('Dollar updated successfully:', data);
+        if (dollar) {
+            setDollar(dollar + dollars);
+        } else {
+            setDollar(dollars);
+        }
     } catch (error: any) {
         console.error('Error updating dollar value:', error.message);
     }
@@ -51,7 +57,7 @@ export default function AboutPage({ id, dollar: initialDollar }: AddCoinTypes) {
 
                 setDollar((currentDollar) => {
                     const updatedDollar = currentDollar;
-                    updateDollar(id, 3);
+                    updateDollar(id, 1000);
                     // return updatedDollar;
                     return 1;
                 });
