@@ -224,6 +224,9 @@ async function executeWeatherContract(formatedDateArray: Array<string>, DateArra
   console.log(twelveOclockDegree);
 
   // 獲取天氣合約預測氣溫
+  if (weatherContract.length === 0) {
+    return "There isn't any weather contract";
+  }
   const forcastDegree = weatherContract[0].id.split(".")[2];
   console.log(forcastDegree);
 
@@ -273,7 +276,7 @@ async function executeWeatherContract(formatedDateArray: Array<string>, DateArra
     };
     await addDollar(putUserData);
     const putBetData = {
-      id: bet.id!,
+      id: bet.id,
       status: true,
       dollar: profit,
     };
@@ -342,6 +345,9 @@ async function executeNBAContract(formatedDateArray: Array<string>) {
     // 獲取 NBA 合約勝隊賠率
     console.log(gameid)
     console.log("?")
+    if (NBAContractArray.length === 0) {
+      return "There isn't any NBA contract";
+    }
     const theContract = NBAContractArray.filter(
       (contract) => 
         contract.id === gameid
@@ -378,7 +384,7 @@ async function executeNBAContract(formatedDateArray: Array<string>) {
       };
       await addDollar(putUserData);
       const putBetData = {
-        id: bet.id!,
+        id: bet.id,
         status: true,
         dollar: profit,
       };
@@ -409,7 +415,7 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
     )
     .execute();
 
-  if (!marketingContractArray) {
+  if (marketingContractArray.length === 0) {
     return "There isn't any marketing contract";
   }
 
