@@ -414,7 +414,7 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
     // 調取開盤股價及漲跌幅
     const yaerMonth = formatedDateArray[0].split("-").slice(0, 2).join("");
     const response = await fetch(
-      `https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY?date=${yaerMonth}&stockNo=0050&response=json`,
+      `https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY?date=${yaerMonth}&stockNo=${companyCode}&response=json`,
     );
     const data = await response.json();
     const yesterdayData = data.data[data.data.length - 1];
