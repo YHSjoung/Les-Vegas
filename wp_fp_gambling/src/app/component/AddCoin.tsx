@@ -5,7 +5,7 @@ type AddCoinTypes = {
     id: string;
     dollar: number;
 };
-const updateDollar = async (id: string, dollars: number) => {
+const useUpdateDollar = async (id: string, dollars: number) => {
     const { dollar, setDollar } = useContext(ContractContext);
     try {
         // alert({ userId: id, dollar })
@@ -57,7 +57,7 @@ export default function AboutPage({ id, dollar: initialDollar }: AddCoinTypes) {
 
                 setDollar((currentDollar) => {
                     const updatedDollar = currentDollar;
-                    updateDollar(id, 1000);
+                    useUpdateDollar(id, 1000);
                     // return updatedDollar;
                     return 1;
                 });
