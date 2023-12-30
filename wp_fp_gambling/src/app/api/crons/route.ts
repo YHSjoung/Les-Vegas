@@ -187,7 +187,7 @@ async function executeWeatherContract(formatedDateArray: Array<string>, DateArra
     .from(contractTable)
     .where(
       and(
-        eq(contractTable.updateDate, formatedDateArray[0]),
+        eq(contractTable.updateDate, formatedDateArray[1]),
         eq(contractTable.type, "weather"),
       ),
     )
@@ -281,11 +281,7 @@ async function executeWeatherContract(formatedDateArray: Array<string>, DateArra
 
 // 執行 NBA 合約
 async function executeNBAContract(formatedDateArray: Array<string>) {
-  const theDayBeforeYesterday = new Date(formatedDateArray[0]).setDate(new Date(formatedDateArray[0]).getDate() - 1);
-  const year = new Date(theDayBeforeYesterday).getFullYear();
-  const month = (new Date(theDayBeforeYesterday).getMonth() + 1).toString().padStart(2, "0");
-  const day = new Date(theDayBeforeYesterday).getDate().toString().padStart(2, "0");
-  const formatedTheDayBeforeYesterday = `${year}-${month}-${day}`;
+  // 獲取 NBA 合約資料
   const NBAContractArray = await db
     .select({
       id: contractTable.id,
@@ -298,7 +294,7 @@ async function executeNBAContract(formatedDateArray: Array<string>) {
     .from(contractTable)
     .where(
       and(
-        eq(contractTable.updateDate, formatedDateArray[0]),
+        eq(contractTable.updateDate, formatedDateArray[1]),
         eq(contractTable.type, "sport"),
       ),
     )
@@ -310,7 +306,7 @@ async function executeNBAContract(formatedDateArray: Array<string>) {
   
   // 調取昨天 NBA 對戰結果
   const response = await fetch(
-    `https://api-secure.sports.yahoo.com/v1/editorial/s/scoreboard?&region=TW&tz=Asia%2FTaipei&ysp_redesign=1&leagues=nba&date=${formatedTheDayBeforeYesterday}`,
+    `https://api-secure.sports.yahoo.com/v1/editorial/s/scoreboard?&region=TW&tz=Asia%2FTaipei&ysp_redesign=1&leagues=nba&date=${formatedDateArray[0]}`,
   );
   const data = await response.json();
   const games = data.service.scoreboard.games;
@@ -392,11 +388,7 @@ async function executeNBAContract(formatedDateArray: Array<string>) {
 
 // 執行股價合約
 async function executeMarketingContract(formatedDateArray: Array<string>) {
-  const theDayBeforeYesterday = new Date(formatedDateArray[0]).setDate(new Date(formatedDateArray[0]).getDate() - 1);
-  const year = new Date(theDayBeforeYesterday).getFullYear();
-  const month = (new Date(theDayBeforeYesterday).getMonth() + 1).toString().padStart(2, "0");
-  const day = new Date(theDayBeforeYesterday).getDate().toString().padStart(2, "0");
-  const formatedTheDayBeforeYesterday = `${year}-${month}-${day}`;
+  // 獲取股價合約資料
   const marketingContractArray = await db
     .select({
       id: contractTable.id,
@@ -408,7 +400,7 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
     .from(contractTable)
     .where(
       and(
-        eq(contractTable.updateDate, formatedDateArray[0]),
+        eq(contractTable.updateDate, formatedDateArray[1]),
         eq(contractTable.type, "marketing"),
       ),
     )
@@ -447,17 +439,17 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
     
     // 輸入結果
     const putData = {
-      id: `m.${formatedTheDayBeforeYesterday}.${companyCode}`,
+      id: `m.${formatedDateArray[0]}.${companyCode}`,
       outcome: outcome,
     };
     await putContract(putData);
 
     // 獲取股價合約賠率
     const theContract = marketingContractArray.filter(
-      (contract) => contract.id === `m.${formatedTheDayBeforeYesterday}.${companyCode}`,
+      (contract) => contract.id === `m.${formatedDateArray[0]}.${companyCode}`,
     );
     console.log(theContract);
-    console.log(`m.${formatedTheDayBeforeYesterday}.${companyCode}`);
+    console.log(`m.${formatedDateArray[0]}.${companyCode}`);
     const totalDollar = theContract[0].totalDollar;
     const outcomeDollar = theContract[0][`${outcome}Dollar`];
     const odds = totalDollar! / outcomeDollar!;
@@ -498,60 +490,31 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
   console.log(marketingContractReses);
 }
 
-// export async function GET() {
-//   console.log("GET");
-//   const formatedDateArray = formateDate(DateArray);
-//   const weatherContract = await postWeatherContract(formatedDateArray);
-//   const NBAContract = await postNBAContract(formatedDateArray);
-//   const marketingContract = await postMarketingContract(formatedDateArray);
-//   // await blockContract(formatedDateArray);
-//   const data = {
-//     weatherContract: weatherContract,
-//     NBAContract: NBAContract,
-//     marketingContract: marketingContract,
-//   };
-//   try {
-//     return NextResponse.json({ data: data }, { status: 200 });
-//   } catch (error) {
-//     return NextResponse.json(
-//       { error: "Internal server error" },
-//       {
-//         status: 500,
-//       },
-//     );
-//   }
-// }
 
-export async function POST() {
-  console.log("POST");
+export async function GET() {
+  console.log("GET");
   // 建立昨天、今天、明天、後天的日期
-  const today = new Date();
+  const today = new Date(); // 2023-12-30
   const yesterday = new Date().setDate(today.getDate() - 1);
   const tomorrow = new Date().setDate(today.getDate() + 1);
   const theDayAfterTomorrow = new Date().setDate(today.getDate() + 2);
   const DateArray = [yesterday, today, tomorrow, theDayAfterTomorrow];
-  // const yesterday = new Date().setDate(today.getDate() - 4);
-  // const daya = new Date().setDate(today.getDate() - 3);
-  // const tomorrow = new Date().setDate(today.getDate()-2);
-  // const theDayAfterTomorrow = new Date().setDate(today.getDate()-1);
+  // const yesterday = new Date().setDate(today.getDate() - 2);
+  // const daya = new Date().setDate(today.getDate() - 1);
+  // const tomorrow = new Date().setDate(today.getDate());
+  // const theDayAfterTomorrow = new Date().setDate(today.getDate() + 1);
   // const DateArray = [yesterday, daya, tomorrow, theDayAfterTomorrow];
   const formatedDateArray = formateDate(DateArray);
-  const weatherContract = await postWeatherContract(formatedDateArray, DateArray);
-  const NBAContract = await postNBAContract(formatedDateArray);
-  const marketingContract = await postMarketingContract(formatedDateArray);
+  await postWeatherContract(formatedDateArray, DateArray);
+  await postNBAContract(formatedDateArray);
+  await postMarketingContract(formatedDateArray);
   console.log(formatedDateArray);
   await blockContract(formatedDateArray);
-  // await executeWeatherContract(formatedDateArray, DateArray);
-  // await executeNBAContract(formatedDateArray);
+  await executeWeatherContract(formatedDateArray, DateArray);
+  await executeNBAContract(formatedDateArray);
   await executeMarketingContract(formatedDateArray);
-  const data = {
-    // weatherContract: weatherContract,
-    // NBAContract: NBAContract,
-    // marketingContract: marketingContract,
-    "condition": "success",
-  };
   try {
-    return NextResponse.json({ data: data }, { status: 200 });
+    return NextResponse.json({ data: "success" }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: "Internal server error" },

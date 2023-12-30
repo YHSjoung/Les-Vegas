@@ -7,7 +7,7 @@ import { desc, eq } from "drizzle-orm";
 import { betsTable, contractTable, usersTable } from "@/db/schema";
 import EmptyCart from "./cart_client";
 import Bet from "../component/Bet";
-import { auth, UserButton } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs";
 
 export default async function Cart() {
   const { userId } = auth();
@@ -35,6 +35,7 @@ export default async function Cart() {
         option: betsTable.option,
         dollar: betsTable.dollar,
         status: betsTable.status,
+        createdAt: betsTable.createdAt,
       })
       .from(betsTable)
       .orderBy(desc(betsTable.createdAt))
@@ -59,12 +60,12 @@ export default async function Cart() {
     })
     .from(contractTable)
     .innerJoin(betSubquery, eq(contractTable.id, betSubquery.contractId))
+    .orderBy(desc(betSubquery.createdAt))
     .execute();
   console.log(bets);
 
   return (
     <>
-      {/* <Navbar /> */}
       <Header userId={userId!} dollarnum={dollarNum}/>
       <div className="p-11" />
       <div className="container my-3 py-3">

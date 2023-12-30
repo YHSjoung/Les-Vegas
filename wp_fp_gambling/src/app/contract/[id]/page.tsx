@@ -83,11 +83,6 @@ function Contract () {
       alert("下注金額不能為0");
       return;
     }
-    // if (selectedOption) {
-    //   if (betAmount >= 0) {
-    //     bet(contract!.id, selectedOption, betAmount, user!.id, );
-    //   }
-    // };
     bet(contract!.id, selectedOption, betAmount, user!.id, );
     setBlock(true);
     setTotalDollar(totalDollar + betAmount);
@@ -173,7 +168,9 @@ function Contract () {
                   <div className="row">
                     <div className="col-md-4">
                       <button
-                        className={`btn btn-outline-dark btn-block ${selectedOption === 'optionA' || bets?.option === 'optionA' ? 'selected' : ''}`}
+                      className={`
+                        ${selectedOption === 'optionA' || bets?.option === 'optionA' ? 'selected' : ''} 
+                        ${contract.outcome !== null && contract.outcome.toString() === 'optionA' ? 'btn btn-success'  : 'btn btn-outline-dark btn-block '}`}
                         onClick={() => handleSaveAnswer('optionA')}
                         disabled={block}
                       >
@@ -182,7 +179,9 @@ function Contract () {
                     </div>
                     <div className="col-md-4">
                       <button
-                        className={`btn btn-outline-dark btn-block ${selectedOption === 'optionB' || bets?.option === 'optionB' ? 'selected' : ''}`}
+                      className={`
+                        ${selectedOption === 'optionB' || bets?.option === 'optionB' ? 'selected' : ''} 
+                        ${contract.outcome !== null && contract.outcome.toString() === 'optionB' ? 'btn btn-success' : 'btn btn-outline-dark btn-block '}`}
                         onClick={() => handleSaveAnswer('optionB')}
                         disabled={block}
                       >
@@ -191,7 +190,9 @@ function Contract () {
                     </div>
                     <div className="col-md-4">
                       <button
-                        className={`btn btn-outline-dark btn-block ${selectedOption === 'optionC' || bets?.option === 'optionC' ? 'selected' : ''}`}
+                      className={`
+                        ${selectedOption === 'optionC' || bets?.option === 'optionC' ? 'selected' : ''} 
+                        ${contract.outcome !== null && contract.outcome.toString() === 'optionC' ? 'btn btn-success'  : 'btn btn-outline-dark btn-block '}`}
                         onClick={() => handleSaveAnswer('optionC')}
                         disabled={block}
                       >
@@ -226,7 +227,9 @@ function Contract () {
                   )}
                 </div>
                 { block ? (
-                  <p className="text-danger">您已投注，請等待結果揭曉</p>
+                  <p className="text-danger">
+                    {contract.outcome === null ? '您已投注，請等待結果揭曉' : '結果已公佈'}
+                  </p>
                 ) : (
                   <button
                   className={`btn btn-outline-dark w-100`} // w-100 for full width
@@ -235,7 +238,6 @@ function Contract () {
                   下注
                 </button>
                 )}
-
               </div>
             </div>
           </div>
