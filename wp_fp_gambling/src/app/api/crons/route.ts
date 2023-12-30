@@ -193,6 +193,9 @@ async function executeWeatherContract(formatedDateArray: Array<string>, DateArra
     )
     .execute();
   console.log(weatherContract);
+  if (!weatherContract) {
+    return "There isn't any weather contract";
+  }
 
   // 獲取昨日氣溫資料
   const response = await fetch(
@@ -499,11 +502,6 @@ export async function GET() {
   const tomorrow = new Date().setDate(today.getDate() + 1);
   const theDayAfterTomorrow = new Date().setDate(today.getDate() + 2);
   const DateArray = [yesterday, today, tomorrow, theDayAfterTomorrow];
-  // const yesterday = new Date().setDate(today.getDate() - 2);
-  // const daya = new Date().setDate(today.getDate() - 1);
-  // const tomorrow = new Date().setDate(today.getDate());
-  // const theDayAfterTomorrow = new Date().setDate(today.getDate() + 1);
-  // const DateArray = [yesterday, daya, tomorrow, theDayAfterTomorrow];
   const formatedDateArray = formateDate(DateArray);
   await postWeatherContract(formatedDateArray, DateArray);
   await postNBAContract(formatedDateArray);
