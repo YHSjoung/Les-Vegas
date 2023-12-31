@@ -1,20 +1,19 @@
 "use client";
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 type AddCoinTypes = {
     id: string;
     dollar: number;
 };
 const updateDollar = async (id: string, dollars: number) => {
     try {
-        // alert({ userId: id, dollar })
+        console.log(id, dollars);
         const response = await fetch("/api/user", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ userId: id, dollars }),
+            body: JSON.stringify({ userId: id, dollar: dollars }),
         });
-
         if (!response.ok) {
             throw new Error('Failed to update dollar value');
         }
@@ -26,9 +25,9 @@ const updateDollar = async (id: string, dollars: number) => {
     }
 };
 export default function AboutPage({ id, dollar: initialDollar }: AddCoinTypes) {
-
+    console.log(initialDollar);
     const [dollar, setDollar] = useState(initialDollar);
-    const [watchTime, setWatchTime] = useState(30);
+    const [watchTime, setWatchTime] = useState(5);
     const getRandomWatchTime = () => {
         // 取得觀看時間，這裡設定為 10 到 40 秒之間
         // return Math.floor(Math.random() * (4 - 1 + 1)) + 10;
@@ -48,10 +47,10 @@ export default function AboutPage({ id, dollar: initialDollar }: AddCoinTypes) {
             } else {
                 clearInterval(timer);
                 // 觀看時間結束，增加點數
-
                 setDollar((currentDollar) => {
-                    const updatedDollar = currentDollar;
-                    updateDollar(id, 1000);
+                    const updatedDollar = currentDollar + 1000;
+                    console.log(updatedDollar);
+                    updateDollar(id, updatedDollar);
                     // return updatedDollar;
                     return 1;
                 });

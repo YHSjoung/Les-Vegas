@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Footer } from "../component";
 import Header from "../component/Header";
 import AddCoin from "../component/AddCoin";
 import { db } from "@/db";
 import { eq } from "drizzle-orm";
 import { usersTable } from "@/db/schema";
-import { auth, UserButton } from "@clerk/nextjs";
+import { auth, } from "@clerk/nextjs";
 export default async function AboutPage() {
   const { userId } = auth();
   console.log(userId);

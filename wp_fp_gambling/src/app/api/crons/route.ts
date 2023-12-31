@@ -503,11 +503,15 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
 export async function GET() {
   console.log("GET");
   // 建立昨天、今天、明天、後天的日期
-  const today = new Date(); // 2023-12-30
-  const yesterday = new Date().setDate(today.getDate() - 1);
-  const tomorrow = new Date().setDate(today.getDate() + 1);
-  const theDayAfterTomorrow = new Date().setDate(today.getDate() + 2);
-  const DateArray = [yesterday, today, tomorrow, theDayAfterTomorrow];
+  // 函數用於計算昨天、今天、明天、後天的日期
+  function calculateDates() {
+    const today = new Date();
+    const yesterday = new Date().setDate(today.getDate() - 1);
+    const tomorrow = new Date().setDate(today.getDate() + 1);
+    const theDayAfterTomorrow = new Date().setDate(today.getDate() + 2);
+    return [yesterday, today, tomorrow, theDayAfterTomorrow];
+  }
+  const DateArray = calculateDates();
   const formatedDateArray = formateDate(DateArray);
   await postWeatherContract(formatedDateArray, DateArray);
   await postNBAContract(formatedDateArray);
@@ -517,6 +521,7 @@ export async function GET() {
   await executeWeatherContract(formatedDateArray, DateArray);
   await executeNBAContract(formatedDateArray);
   await executeMarketingContract(formatedDateArray);
+  console.log(DateArray);
   try {
     return NextResponse.json({ data: "success" }, { status: 200 });
   } catch (error) {
