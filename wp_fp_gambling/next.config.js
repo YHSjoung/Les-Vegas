@@ -1,7 +1,10 @@
 // next.config.js
 const nextConfig = {
     images: {
-      domains: ['github.com'], // Add other domains as needed
+      remotePatterns: [{
+        protocol: 'https',
+        hostname: 'github.com',
+      }], // Add other domains as needed
     },
   };
   

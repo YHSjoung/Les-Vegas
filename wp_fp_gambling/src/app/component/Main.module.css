@@ -8,7 +8,6 @@
     0% {
         transform: translateY(0);
     }
-
     100% {
         transform: translateY(10px);
     }
@@ -27,7 +26,7 @@
 }
 
 .noRotate {
-    tranform: none !important;
+    transform: none !important;
 }
 
 .rotate:hover {
@@ -43,7 +42,6 @@
     0% {
         opacity: 0;
     }
-
     100% {
         opacity: 1;
     }

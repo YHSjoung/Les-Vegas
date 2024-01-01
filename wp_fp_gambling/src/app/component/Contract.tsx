@@ -1,3 +1,5 @@
+"use client";
+import React from "react";
 import Link from "next/link";
 type ContractProps = {
   contractId: string;
@@ -41,14 +43,8 @@ export default function Contract({
   return (
     <>
       <Link href={`/contract/${contractId}`}>
-      <div id={contractId} key={contractId} className="flex flex-col gap-4">
+      <div id={contractId} key={contractId} className="flex flex-col gap-4 no-underline">
         <div className="card text-center h-100" key={contractId}>
-          {/* <img
-                  className="card-img-top p-3"
-                  src={product.image}
-                  alt="Card"
-                  height={300}
-                /> */}
           <div className="card-body">
             <p className="text-2xl bold mb-2 font-bold">{title}</p>
        
@@ -71,14 +67,6 @@ export default function Contract({
               <div>截止時間: {blockDate}</div>
             </div>
           </div>
-          {/* <div className="card-body">
-                  <Link to={"/product/" + product.id} className="btn btn-dark m-1">
-                    Buy Now
-                  </Link>
-                  <button className="btn btn-dark m-1" onClick={() => addProduct(product)}>
-                    Add to Cart
-                  </button>
-                </div> */}
         </div>
       </div>
       </Link>

@@ -1,18 +1,17 @@
 "use client";
-import React, { useState, useEffect, useContext, use } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '../../component/Header';
 import Marquee from "react-fast-marquee";
-import bet from './api/bet';
+import handleBet from './api/bet';
 import Image from 'next/image';
-import { useUser } from "@clerk/nextjs";
-import { ContractContext } from './api/useContract';
-import { set } from 'zod';
+import { ContractContext } from '../../../useHook/useContract';
+import { UserContext } from '@/useHook/useUser';
 
 function Contract () {
-  const { user } = useUser();
-  const { contract, contracts, setContractId, setContractType, dollar, setDollar, setUserId, bets, setBets } = useContext(ContractContext);
+  const { userId, dollar, setDollar } = useContext(UserContext);
+  const { contract, contractsOfTheSameType, setContractId, setContractType, bet, setBet, fetchBet } = useContext(ContractContext);
   const params = useParams();
   const paramsContractId = params.id as string;
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -23,6 +22,7 @@ function Contract () {
 
 
   useEffect(() => {
+    // 設置合約 ID
     setContractId(paramsContractId);
     let type
     if (paramsContractId.split(".")[0] === "w") {
@@ -32,24 +32,19 @@ function Contract () {
     } else if (paramsContractId.split(".")[0] === "m") {
       type = "marketing"
     }
-    console.log(type)
-
+    console.log(type);
     setContractType(type!);
-    if (user) {
-      setUserId(user.id);
-      console.log(user.id);
-    }
-    console.log(bets);
-  },[paramsContractId, user]);
+    console.log(bet);
+  },[paramsContractId]);
 
   useEffect(() => {
-    console.log("Bets:", bets);
-    if(!bets) return;
-    if (bets!.contractId === paramsContractId) {
+    console.log("Bet:", bet);
+    if(!bet) return;
+    if (bet!.contractId === paramsContractId) {
       setBlock(true);
     }
     console.log("Block:", block)
-  }, [bets, paramsContractId]);
+  }, [bet, paramsContractId]);
 
   useEffect(() => {
     if (contract) {
@@ -83,15 +78,15 @@ function Contract () {
       alert("下注金額不能為0");
       return;
     }
-    bet(contract!.id, selectedOption, betAmount, user!.id, );
+    handleBet(contract!.id, selectedOption, betAmount, userId!, );
     setBlock(true);
     setTotalDollar(totalDollar + betAmount);
     setAttendees(attendees + 1);
     setDollar(dollar! - betAmount);
-    setBets({
+    setBet({
       id: paramsContractId,
       contractId: paramsContractId,
-      userId: user!.id,
+      userId: userId!,
       option: selectedOption!,
       dollar: betAmount,
     });
@@ -101,18 +96,11 @@ function Contract () {
       <>
         <div className="py-2">
           <div className="d-flex">
-            {contracts ? (
+            {contractsOfTheSameType ? (
               <>
-              {contracts.map((contract) => {
+              {contractsOfTheSameType.map((contract) => {
                 return (
                   <div key={contract.id} className="card mx-4 text-center">
-                    {/* <img
-                      className="card-img-top p-3"
-                      src={item.image}
-                      alt="Card"
-                      height={300}
-                      width={300}
-                    /> */}
                     <Link href={"/contract/" + contract.id} className="btn btn-dark m-1">
   
                     <div className="card-body">
@@ -137,9 +125,9 @@ function Contract () {
 
   return (
     <>
-      {user ? (
+      {userId ? (
         <>
-          <Header userId={user.id} dollarnum={null}/>
+          <Header/>
         </>
       ) : (
           <p>正在加載數據...</p>
@@ -169,7 +157,7 @@ function Contract () {
                     <div className="col-md-4">
                       <button
                       className={`
-                        ${selectedOption === 'optionA' || bets?.option === 'optionA' ? 'selected' : ''} 
+                        ${selectedOption === 'optionA' || bet?.option === 'optionA' ? 'selected' : ''} 
                         ${contract.outcome !== null && contract.outcome.toString() === 'optionA' ? 'btn btn-success'  : 'btn btn-outline-dark btn-block '}`}
                         onClick={() => handleSaveAnswer('optionA')}
                         disabled={block}
@@ -180,7 +168,7 @@ function Contract () {
                     <div className="col-md-4">
                       <button
                       className={`
-                        ${selectedOption === 'optionB' || bets?.option === 'optionB' ? 'selected' : ''} 
+                        ${selectedOption === 'optionB' || bet?.option === 'optionB' ? 'selected' : ''} 
                         ${contract.outcome !== null && contract.outcome.toString() === 'optionB' ? 'btn btn-success' : 'btn btn-outline-dark btn-block '}`}
                         onClick={() => handleSaveAnswer('optionB')}
                         disabled={block}
@@ -191,7 +179,7 @@ function Contract () {
                     <div className="col-md-4">
                       <button
                       className={`
-                        ${selectedOption === 'optionC' || bets?.option === 'optionC' ? 'selected' : ''} 
+                        ${selectedOption === 'optionC' || bet?.option === 'optionC' ? 'selected' : ''} 
                         ${contract.outcome !== null && contract.outcome.toString() === 'optionC' ? 'btn btn-success'  : 'btn btn-outline-dark btn-block '}`}
                         onClick={() => handleSaveAnswer('optionC')}
                         disabled={block}
@@ -209,7 +197,7 @@ function Contract () {
                       <input
                       type="number"
                       id="betAmount"
-                      value={bets?.dollar.toString() || betAmount}
+                      value={bet?.dollar.toString() || betAmount}
                       className="form-control"
                       disabled
                     />

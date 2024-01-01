@@ -1,14 +1,13 @@
 import Header from "./component/Header";
-import TestAPI from "@/component/TestAPI";
+import TestAPI from "@/app/component/TestAPI";
 import { auth } from "@clerk/nextjs";
-import { Footer } from "./component";
+import Footer from "./component/Footer";
 import Main from "./component/Main";
 import Contract from "./component/Contract";
 import { Suspense } from "react";
 import Loading from "./loading";
 import { db } from "@/db";
 import { eq, and } from "drizzle-orm";
-import Link from "next/link";
 import { betsTable, contractTable, usersTable } from "@/db/schema";
 
 export default async function Home() {
@@ -116,7 +115,7 @@ export default async function Home() {
   console.log(weatherContracts);
   return (
     <>
-      <Header userId={userId!} dollarnum={dollarNum} />
+      <Header />
       <Main />
       <Suspense fallback={<Loading />} />
       {weatherContracts.length === 0 ? (

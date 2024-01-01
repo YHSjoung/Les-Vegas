@@ -52,6 +52,15 @@ const NBATeamNameDictionay: Dictionary = {
   "nba.t.30": "夏洛特黃蜂",
 };
 
+// 計算昨天、今天、明天、後天的日期
+function calculateDates() {
+  const today = new Date();
+  const yesterday = new Date().setDate(today.getDate() - 1);
+  const tomorrow = new Date().setDate(today.getDate() + 1);
+  const theDayAfterTomorrow = new Date().setDate(today.getDate() + 2);
+  return [yesterday, today, tomorrow, theDayAfterTomorrow];
+}
+
 //格式化全局日期 YYYY-MM-DD
 function formateDate(DateArray: Array<string | number | Date>) {
   const formatedDateArray = [];
@@ -503,14 +512,6 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
 export async function GET() {
   console.log("GET");
   // 建立昨天、今天、明天、後天的日期
-  // 函數用於計算昨天、今天、明天、後天的日期
-  function calculateDates() {
-    const today = new Date();
-    const yesterday = new Date().setDate(today.getDate() - 1);
-    const tomorrow = new Date().setDate(today.getDate() + 1);
-    const theDayAfterTomorrow = new Date().setDate(today.getDate() + 2);
-    return [yesterday, today, tomorrow, theDayAfterTomorrow];
-  }
   const DateArray = calculateDates();
   const formatedDateArray = formateDate(DateArray);
   await postWeatherContract(formatedDateArray, DateArray);

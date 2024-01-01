@@ -56,7 +56,9 @@ export async function addDollar(data: AddDollarType) {
       .from(usersTable)
       .where(eq(usersTable.id, userId))
       .execute();
+    console.log(dollar);
     const newDollar = user[0].dollar! + dollar;
+    console.log(newDollar);
     const updatedUser = await db
       .update(usersTable)
       .set({

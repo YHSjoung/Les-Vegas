@@ -1,11 +1,10 @@
 import React from "react";
-import { Footer } from "../component";
-import Link from "next/link";
+import Footer from "../component/Footer";
 import Header from "../component/Header";
 import { db } from "@/db";
 import { desc, eq } from "drizzle-orm";
 import { betsTable, contractTable, usersTable } from "@/db/schema";
-import EmptyCart from "./cart_client";
+import EmptyCart from "../component/EmptyCart";
 import Bet from "../component/Bet";
 import { auth } from "@clerk/nextjs";
 
@@ -66,7 +65,7 @@ export default async function Cart() {
 
   return (
     <>
-      <Header userId={userId!} dollarnum={dollarNum}/>
+      <Header/>
       <div className="p-11" />
       <div className="container my-3 py-3">
         <p className="text-center font-bold text-4xl z-5 mb-2">Cart</p>
@@ -123,12 +122,6 @@ export default async function Cart() {
                           <span>{bets.length}</span>
                         </li>
                         <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
-                          {/* <div>
-                            <strong>Total amount</strong>
-                          </div>
-                          <span>
-                            <strong>${Math.round(4.5)}</strong>
-                          </span> */}
                         </li>
                       </ul>
                     </div>

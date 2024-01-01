@@ -1,4 +1,4 @@
-const bet = async (contractId: string, selectedOption: string, betAmount: number, userId: string)  => {
+export default async function handleBet (contractId: string, selectedOption: string, betAmount: number, userId: string) {
   try {
     console.log('betAmount:', betAmount);
     const postBetResponse = await fetch('/api/bet', {
@@ -40,5 +40,3 @@ const bet = async (contractId: string, selectedOption: string, betAmount: number
     console.error('Error saving answer:', error);
   }
 };
-
-export default bet;

@@ -3,7 +3,8 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { ContractProvider } from "./contract/[id]/api/useContract";
+import { ContractProvider } from "../useHook/useContract";
+import { UserProvider } from "@/useHook/useUser";
 
 export const metadata: Metadata = {
   title: "Las Vegas",
@@ -19,9 +20,11 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body>
-          <ContractProvider>
-            {children}
-          </ContractProvider>
+          <UserProvider>
+            <ContractProvider>
+              {children}
+            </ContractProvider>
+          </UserProvider>
         </body>
       </html>
     </ClerkProvider>

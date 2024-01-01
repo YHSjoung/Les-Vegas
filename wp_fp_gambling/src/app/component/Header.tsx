@@ -1,24 +1,14 @@
 "use client";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext } from "react";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import Head from "next/head";
-import { ContractContext } from "../contract/[id]/api/useContract";
+import { UserContext } from "@/useHook/useUser";
+import "../globals.css";
 
-const Header = ({
-  userId,
-  dollarnum,
-}: {
-  userId: string;
-  dollarnum: number | null;
-}) => {
-  const { dollar } = useContext(ContractContext);
-  let dollarNum;
-  if ( !dollar ) {
-    dollarNum = dollarnum!;
-  } else {
-    dollarNum = dollar;
-  }
+
+const Header = () => {
+  const { userId, dollar } = useContext(UserContext);
 
   return (
     <div className="header fixed z-10 w-full bg-gray-900 bg-opacity-95">
@@ -45,7 +35,7 @@ const Header = ({
           </div>
           {userId && (
             <div>
-              <p className="text-white text-xl font-bold">$ {dollarNum}</p>
+              <p className="text-white text-xl font-bold">$ {dollar}</p>
             </div>
           )}
           <div className="buttons text-center">
