@@ -1,5 +1,5 @@
 import React from "react";
-import Image from 'next/image'; 
+import Image from "next/image";
 
 const Footer = () => {
   return (
@@ -7,7 +7,7 @@ const Footer = () => {
       <footer className="mb-0 text-center">
         <div className="d-flex align-items-center justify-content-center pb-5">
           <div className="col-md-6">
-            <p className="mb-3 mb-md-0" style={{ fontSize: '1em' }}>
+            <p className="mb-3 mb-md-0" style={{ fontSize: "1em" }}>
               Made with 🖤 by David & Gina & Viola
             </p>
             <a

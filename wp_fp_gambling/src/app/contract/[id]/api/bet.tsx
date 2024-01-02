@@ -1,22 +1,27 @@
-export default async function handleBet (contractId: string, selectedOption: string, betAmount: number, userId: string) {
+export default async function handleBet(
+  contractId: string,
+  selectedOption: string,
+  betAmount: number,
+  userId: string,
+) {
   try {
-    console.log('betAmount:', betAmount);
-    const postBetResponse = await fetch('/api/bet', {
-      method: 'POST',
+    console.log("betAmount:", betAmount);
+    const postBetResponse = await fetch("/api/bet", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         userId,
         contractId,
         option: selectedOption,
-        dollar: betAmount
+        dollar: betAmount,
       }),
     });
-    const putContractResponse = await fetch('/api/contract', {
-      method: 'PUT',
+    const putContractResponse = await fetch("/api/contract", {
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         id: contractId,
@@ -24,19 +29,19 @@ export default async function handleBet (contractId: string, selectedOption: str
         dollar: betAmount,
       }),
     });
-  const deductDollarResponse = await fetch('/api/user', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      userId,
-      dollar: betAmount * -1,
-    }),
-  });
+    const deductDollarResponse = await fetch("/api/user", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId,
+        dollar: betAmount * -1,
+      }),
+    });
 
     // const data = await response.json();
   } catch (error) {
-    console.error('Error saving answer:', error);
+    console.error("Error saving answer:", error);
   }
-};
+}

@@ -38,37 +38,40 @@ export default function Contract({
       option = optionC;
     }
   }
-  
 
   return (
     <>
       <Link href={`/contract/${contractId}`}>
-      <div id={contractId} key={contractId} className="flex flex-col gap-4 no-underline">
-        <div className="card text-center h-100" key={contractId}>
-          <div className="card-body">
-            <p className="text-2xl bold mb-2 font-bold">{title}</p>
-       
-            <p className="card-text">{description}</p>
-          </div>
-          <hr className="border-t border-gray-600 my-1" />
-          <div className="flex gap-4 justify-between my-3">
-            {option ? (
-              <div className="ml-4 border-t border-2 border-green-600 rounded-md p-2 bg-green-200">
-                您已投注「 {option} 」$ {dollar}
+        <div
+          id={contractId}
+          key={contractId}
+          className="flex flex-col gap-4 no-underline"
+        >
+          <div className="card text-center h-100" key={contractId}>
+            <div className="card-body">
+              <p className="text-2xl bold mb-2 font-bold">{title}</p>
+
+              <p className="card-text">{description}</p>
+            </div>
+            <hr className="border-t border-gray-600 my-1" />
+            <div className="flex gap-4 justify-between my-3">
+              {option ? (
+                <div className="ml-4 border-t border-2 border-green-600 rounded-md p-2 bg-green-200">
+                  您已投注「 {option} 」$ {dollar}
+                </div>
+              ) : (
+                <div className="ml-4 border-t border-2 border-gray-600 rounded-md p-2 bg-gray-200">
+                  您尚未投注
+                </div>
+              )}
+              <div className="flex gap-3 mr-4 py-2">
+                <div>參加人數: {attendees}</div>
+                <div>總投注金額 $ {totalDollar}</div>
+                <div>截止時間: {blockDate}</div>
               </div>
-            ) : (
-              <div className="ml-4 border-t border-2 border-gray-600 rounded-md p-2 bg-gray-200">
-                您尚未投注
-              </div>
-            )}
-            <div className="flex gap-3 mr-4 py-2">
-              <div>參加人數: {attendees}</div>
-              <div>總投注金額 $ {totalDollar}</div>
-              <div>截止時間: {blockDate}</div>
             </div>
           </div>
         </div>
-      </div>
       </Link>
     </>
   );

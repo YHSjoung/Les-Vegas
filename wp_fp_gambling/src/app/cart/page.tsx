@@ -65,7 +65,7 @@ export default async function Cart() {
 
   return (
     <>
-      <Header/>
+      <Header />
       <div className="p-11" />
       <div className="container my-3 py-3">
         <p className="text-center font-bold text-4xl z-5 mb-2">Cart</p>
@@ -77,35 +77,35 @@ export default async function Cart() {
                 <div className="col-md-8">
                   {bets.length === 0 ? (
                     <EmptyCart />
-                    ) : (
-                      <>
-                        <div className="card mb-4">
-                          <div className="card-header py-3 font-bold text-2xl ml-4">
-                            Bet List
-                          </div>
-                          <div className="card-body">
-                            {bets.map((bet) => {
-                              return (
-                                <Bet
-                                  key={bet.id}
-                                  id={bet.id}
-                                  contractId={bet.contractId!}
-                                  type={bet.type}
-                                  title={bet.title}
-                                  optionA={bet.optionA!}
-                                  optionB={bet.optionB!}
-                                  optionC={bet.optionC!}
-                                  blockDate={bet.blockDate!}
-                                  updateDate={bet.updateDate!}
-                                  option={bet.option!}
-                                  dollar={bet.dollar!}
-                                  status={bet.status!}
-                                />
-                              );
-                            })}
-                          </div>
+                  ) : (
+                    <>
+                      <div className="card mb-4">
+                        <div className="card-header py-3 font-bold text-2xl ml-4">
+                          Bet List
                         </div>
-                      </>
+                        <div className="card-body">
+                          {bets.map((bet) => {
+                            return (
+                              <Bet
+                                key={bet.id}
+                                id={bet.id}
+                                contractId={bet.contractId!}
+                                type={bet.type}
+                                title={bet.title}
+                                optionA={bet.optionA!}
+                                optionB={bet.optionB!}
+                                optionC={bet.optionC!}
+                                blockDate={bet.blockDate!}
+                                updateDate={bet.updateDate!}
+                                option={bet.option!}
+                                dollar={bet.dollar!}
+                                status={bet.status!}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </>
                   )}
                 </div>
                 <div className="col-md-4">
@@ -121,8 +121,7 @@ export default async function Cart() {
                           </div>
                           <span>{bets.length}</span>
                         </li>
-                        <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
-                        </li>
+                        <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3"></li>
                       </ul>
                     </div>
                   </div>

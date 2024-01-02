@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useEffect, createContext, useContext } from 'react';
-import { outcomeEnum } from '@/db/schema';
-import { UserContext } from './useUser';
+import React, { useState, useEffect, createContext, useContext } from "react";
+import { outcomeEnum } from "@/db/schema";
+import { UserContext } from "./useUser";
 
 export type ContractTable = {
   id: string;
@@ -39,7 +39,10 @@ export type ContractContext = {
   setContract: (contract: ContractTable | null) => void;
   bet: BetTable | null;
   setBet: (bet: BetTable | null) => void;
-  fetchBet: (userId: string, contractId: string) => Promise<BetTable | undefined>;
+  fetchBet: (
+    userId: string,
+    contractId: string,
+  ) => Promise<BetTable | undefined>;
 };
 
 export const ContractContext = createContext<ContractContext>({
@@ -62,7 +65,9 @@ type ContractProviderProps = {
 export function ContractProvider({ children }: ContractProviderProps) {
   const [contractId, setContractId] = useState<string | null>(null); // Update the type here
   const [contractType, setContractType] = useState<string | null>(null); // Update the type here
-  const [contractsOfTheSameType, setContractsOfTheSameType] = useState<ContractTable[] | null>(null);
+  const [contractsOfTheSameType, setContractsOfTheSameType] = useState<
+    ContractTable[] | null
+  >(null);
   const [contract, setContract] = useState<ContractTable | null>(null);
   const [bet, setBet] = useState<BetTable | null>(null);
   const { userId } = useContext(UserContext);
@@ -72,7 +77,7 @@ export function ContractProvider({ children }: ContractProviderProps) {
       return;
     }
     fetchContractsByType(contractType);
-    console.log('Contract Type:', contractType);
+    console.log("Contract Type:", contractType);
   }, [contractType]);
 
   useEffect(() => {
@@ -80,79 +85,93 @@ export function ContractProvider({ children }: ContractProviderProps) {
       return;
     }
     fetchContract(contractId);
-    console.log('Contract Id:', contractId);
+    console.log("Contract Id:", contractId);
     fetchBet(userId!, contractId);
   }, [contractId]);
 
-
-  const fetchContract = async (id: string): Promise<void | null> => { // Update the return type here
+  const fetchContract = async (id: string): Promise<void | null> => {
+    // Update the return type here
     if (!id) {
       return null;
     }
-    console.log('Fetching contract:', id);
+    console.log("Fetching contract:", id);
     try {
       const res = await fetch(`/api/contract/?contractId=${id}`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-          },
-          });
+          "Content-Type": "application/json",
+        },
+      });
       const data = await res.json();
-      console.log('Contract:', data.data[0]);
+      console.log("Contract:", data.data[0]);
       setContract(data.data[0]);
     } catch (error) {
-      console.error('Error fetching contract:', error);
+      console.error("Error fetching contract:", error);
     }
   };
-  
+
   const fetchContractsByType = async (type: string) => {
     if (!type) {
       return;
     }
     try {
-      console.log('Fetching contracts:', type);
+      console.log("Fetching contracts:", type);
       const res = await fetch(`/api/contract/?type=${type}`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-          },
-          });
+          "Content-Type": "application/json",
+        },
+      });
       const data = await res.json();
-      console.log('Contracts:', data.data);
+      console.log("Contracts:", data.data);
       setContractsOfTheSameType(data.data);
       return data.data;
     } catch (error) {
-      console.error('Error fetching contracts:', error);
+      console.error("Error fetching contracts:", error);
       return;
     }
-  }
-
+  };
 
   const fetchBet = async (userId: string, contractId: string) => {
     if (!userId) {
       return;
     }
     try {
-      console.log('Fetching bet:', userId);
+      console.log("Fetching bet:", userId);
       const res = await fetch(`/api/bet/?userId=${userId}&forWhat=user`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-          },
-          });
+          "Content-Type": "application/json",
+        },
+      });
       const data = await res.json();
-      const betData = data.data.filter((bet: any) => bet.contractId === contractId)[0];
-      console.log('Bet:', betData);
+      const betData = data.data.filter(
+        (bet: any) => bet.contractId === contractId,
+      )[0];
+      console.log("Bet:", betData);
       setBet(betData);
       return betData;
     } catch (error) {
-      console.error('Error fetching bet:', error);
+      console.error("Error fetching bet:", error);
       return;
     }
-  }
-  
+  };
+
   return (
-    <ContractContext.Provider value={{ contractId, setContractId, contractsOfTheSameType, contract, setContract, contractType, setContractType, bet, setBet, fetchBet }}>
+    <ContractContext.Provider
+      value={{
+        contractId,
+        setContractId,
+        contractsOfTheSameType,
+        contract,
+        setContract,
+        contractType,
+        setContractType,
+        bet,
+        setBet,
+        fetchBet,
+      }}
+    >
       {children}
     </ContractContext.Provider>
   );

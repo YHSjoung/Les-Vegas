@@ -75,7 +75,10 @@ function formateDate(DateArray: Array<string | number | Date>) {
 }
 
 // 建立天氣合約
-async function postWeatherContract(formatedDateArray: Array<string>, DateArray: Array<string | number | Date>) {
+async function postWeatherContract(
+  formatedDateArray: Array<string>,
+  DateArray: Array<string | number | Date>,
+) {
   // 格式化天氣日期 YYYYMMDD
   const weatherDateArray = [];
   for (let i = 0; i < DateArray.length; i++) {
@@ -184,7 +187,10 @@ async function blockContract(formatedDateArray: Array<string>) {
 }
 
 // 執行天氣合約
-async function executeWeatherContract(formatedDateArray: Array<string>, DateArray: Array<string | number | Date>) {
+async function executeWeatherContract(
+  formatedDateArray: Array<string>,
+  DateArray: Array<string | number | Date>,
+) {
   const weatherContract = await db
     .select({
       id: contractTable.id,
@@ -318,7 +324,7 @@ async function executeNBAContract(formatedDateArray: Array<string>) {
   if (!NBAContractArray) {
     return "There isn't any NBA contract";
   }
-  
+
   // 調取昨天 NBA 對戰結果
   const response = await fetch(
     `https://api-secure.sports.yahoo.com/v1/editorial/s/scoreboard?&region=TW&tz=Asia%2FTaipei&ysp_redesign=1&leagues=nba&date=${formatedDateArray[0]}`,
@@ -352,16 +358,15 @@ async function executeNBAContract(formatedDateArray: Array<string>) {
     await putContract(putData);
 
     // 獲取 NBA 合約勝隊賠率
-    console.log(gameid)
-    console.log("?")
+    console.log(gameid);
+    console.log("?");
     if (NBAContractArray.length === 0) {
       return "There isn't any NBA contract";
     }
     const theContract = NBAContractArray.filter(
-      (contract) => 
-        contract.id === gameid
+      (contract) => contract.id === gameid,
     );
-    console.log(NBAContractArray)
+    console.log(NBAContractArray);
     console.log(gameid);
     console.log(theContract);
     const totalDollar = theContract[0].totalDollar;
@@ -454,7 +459,7 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
     } else {
       outcome = OptionType.optionC;
     }
-    
+
     // 輸入結果
     const putData = {
       id: `m.${formatedDateArray[0]}.${companyCode}`,
@@ -507,7 +512,6 @@ async function executeMarketingContract(formatedDateArray: Array<string>) {
   });
   console.log(marketingContractReses);
 }
-
 
 export async function GET() {
   console.log("GET");

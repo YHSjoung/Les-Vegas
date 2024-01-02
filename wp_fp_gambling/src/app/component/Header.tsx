@@ -6,7 +6,6 @@ import Head from "next/head";
 import { UserContext } from "@/useHook/useUser";
 import "../globals.css";
 
-
 const Header = () => {
   const { userId, dollar } = useContext(UserContext);
 

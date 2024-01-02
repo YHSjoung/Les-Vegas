@@ -13,55 +13,52 @@ export async function GET(request: NextRequest) {
     if (contractId === null) {
       console.log(type);
       const contracts = await db
-      .select({
-        id: contractTable.id,
-        type: contractTable.type,
-        title: contractTable.title,
-        description: contractTable.description,
-        optionA: contractTable.optionA,
-        optionB: contractTable.optionB,
-        optionC: contractTable.optionC,
-        optionADollar: contractTable.optionADollar,
-        optionBDollar: contractTable.optionBDollar,
-        optionCDollar: contractTable.optionCDollar,
-        totalDollar: contractTable.totalDollar,
-        attendees: contractTable.attendees,
-        blockDate: contractTable.blockDate,
-        updateDate: contractTable.updateDate,
-        open: contractTable.open,
-        outcome: contractTable.outcome,
-      })
-      .from(contractTable)
-      .where(and(
-        eq(contractTable.open, true),
-        eq(contractTable.type, type)
-        ))
-      .execute();
+        .select({
+          id: contractTable.id,
+          type: contractTable.type,
+          title: contractTable.title,
+          description: contractTable.description,
+          optionA: contractTable.optionA,
+          optionB: contractTable.optionB,
+          optionC: contractTable.optionC,
+          optionADollar: contractTable.optionADollar,
+          optionBDollar: contractTable.optionBDollar,
+          optionCDollar: contractTable.optionCDollar,
+          totalDollar: contractTable.totalDollar,
+          attendees: contractTable.attendees,
+          blockDate: contractTable.blockDate,
+          updateDate: contractTable.updateDate,
+          open: contractTable.open,
+          outcome: contractTable.outcome,
+        })
+        .from(contractTable)
+        .where(and(eq(contractTable.open, true), eq(contractTable.type, type)))
+        .execute();
       console.log(contracts);
       return NextResponse.json({ data: contracts }, { status: 200 });
     } else {
       const contract = await db
-      .select({
-        id: contractTable.id,
-        type: contractTable.type,
-        title: contractTable.title,
-        description: contractTable.description,
-        optionA: contractTable.optionA,
-        optionB: contractTable.optionB,
-        optionC: contractTable.optionC,
-        optionADollar: contractTable.optionADollar,
-        optionBDollar: contractTable.optionBDollar,
-        optionCDollar: contractTable.optionCDollar,
-        totalDollar: contractTable.totalDollar,
-        attendees: contractTable.attendees,
-        blockDate: contractTable.blockDate,
-        updateDate: contractTable.updateDate,
-        open: contractTable.open,
-        outcome: contractTable.outcome,
-      })
-      .from(contractTable)
-      .where(eq(contractTable.id, contractId!))
-      .execute();
+        .select({
+          id: contractTable.id,
+          type: contractTable.type,
+          title: contractTable.title,
+          description: contractTable.description,
+          optionA: contractTable.optionA,
+          optionB: contractTable.optionB,
+          optionC: contractTable.optionC,
+          optionADollar: contractTable.optionADollar,
+          optionBDollar: contractTable.optionBDollar,
+          optionCDollar: contractTable.optionCDollar,
+          totalDollar: contractTable.totalDollar,
+          attendees: contractTable.attendees,
+          blockDate: contractTable.blockDate,
+          updateDate: contractTable.updateDate,
+          open: contractTable.open,
+          outcome: contractTable.outcome,
+        })
+        .from(contractTable)
+        .where(eq(contractTable.id, contractId!))
+        .execute();
       console.log(contract);
       return NextResponse.json({ data: contract }, { status: 200 });
     }

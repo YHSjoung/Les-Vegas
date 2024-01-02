@@ -21,9 +21,7 @@ export default function RootLayout({
       <html lang="en">
         <body>
           <UserProvider>
-            <ContractProvider>
-              {children}
-            </ContractProvider>
+            <ContractProvider>{children}</ContractProvider>
           </UserProvider>
         </body>
       </html>
