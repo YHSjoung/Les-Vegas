@@ -513,7 +513,9 @@ export async function GET() {
   console.log("GET");
   // 建立昨天、今天、明天、後天的日期
   const DateArray = calculateDates();
+  console.log(DateArray);
   const formatedDateArray = formateDate(DateArray);
+  console.log(formatedDateArray);
   await postWeatherContract(formatedDateArray, DateArray);
   await postNBAContract(formatedDateArray);
   await postMarketingContract(formatedDateArray);
